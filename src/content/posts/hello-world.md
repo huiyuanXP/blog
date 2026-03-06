@@ -3,7 +3,7 @@ title: '当 Agent 开始理解心流'
 titleEn: 'When Agents Begin to Understand Flow'
 description: '在 Agent 时代的黎明，我们重新审视人与 AI 协作中的心流体验。'
 descriptionEn: 'At the dawn of the Agent era, we re-examine the flow experience in human-AI collaboration.'
-date: 2026-03-06
+date: 2026-03-05
 tags: ['flow', 'agent', 'thinking']
 ---
 
