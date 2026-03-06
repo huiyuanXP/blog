@@ -1,0 +1,38 @@
+---
+import { ui } from '../i18n/translations';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <span class="footer-dots">
+      <span class="dot-decoration"></span>
+      <span class="dot-decoration"></span>
+      <span class="dot-decoration dot-decoration--active"></span>
+    </span>
+    <span class="footer-text">
+      &copy; {year} HuiYuan
+      <span data-lang="zh">&middot; {ui.zh['footer.copyright']}</span>
+      <span data-lang="en">&middot; {ui.en['footer.copyright']}</span>
+    </span>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--color-border);
+    padding: var(--space-lg) 0;
+    margin-top: auto;
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .footer-text {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+</style>

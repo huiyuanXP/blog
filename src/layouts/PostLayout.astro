@@ -1,0 +1,78 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { ui } from '../i18n/translations';
+
+interface Props {
+  title: string;
+  titleEn: string;
+  date: Date;
+  tags?: string[];
+}
+
+const { title, titleEn, date, tags = [] } = Astro.props;
+const formattedDate = date.toLocaleDateString('zh-CN', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+});
+---
+
+<BaseLayout title={`${title} - HuiYuan`}>
+  <article>
+    <header class="post-header">
+      <a href="/" class="back-link">
+        <span data-lang="zh">&larr; {ui.zh['post.back']}</span>
+        <span data-lang="en">&larr; {ui.en['post.back']}</span>
+      </a>
+      <span class="post-date">{formattedDate}</span>
+      <h1 data-lang="zh">{title}</h1>
+      <h1 data-lang="en">{titleEn}</h1>
+      {tags.length > 0 && (
+        <div class="post-tags">
+          {tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      )}
+    </header>
+    <div class="post-content">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post-header {
+    margin-bottom: var(--space-xl);
+  }
+
+  .back-link {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    border-bottom: none;
+    display: inline-block;
+    margin-bottom: var(--space-lg);
+  }
+
+  .back-link:hover {
+    color: var(--color-text);
+  }
+
+  .post-date {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    margin-bottom: var(--space-sm);
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    line-height: 1.3;
+    margin-bottom: var(--space-sm);
+  }
+
+  .post-tags {
+    margin-top: var(--space-sm);
+  }
+</style>

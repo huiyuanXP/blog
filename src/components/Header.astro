@@ -1,0 +1,119 @@
+---
+import { ui } from '../i18n/translations';
+---
+
+<header class="header">
+  <div class="container header-inner">
+    <div class="header-left">
+      <a href="/" class="site-name">
+        <span class="dot-decoration dot-decoration--active"></span>
+        {ui.zh['site.title']}
+      </a>
+      <span class="site-subtitle" data-lang="zh">{ui.zh['site.subtitle']}</span>
+      <span class="site-subtitle" data-lang="en">{ui.en['site.subtitle']}</span>
+    </div>
+    <nav class="header-right">
+      <a href="/" data-lang="zh">{ui.zh['nav.home']}</a>
+      <a href="/" data-lang="en">{ui.en['nav.home']}</a>
+      <button class="lang-btn" id="lang-toggle" aria-label="Toggle language">
+        <span data-lang="zh">{ui.zh['lang.switch']}</span>
+        <span data-lang="en">{ui.en['lang.switch']}</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-md) 0;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+  }
+
+  .site-name {
+    font-weight: 600;
+    font-size: 1rem;
+    border-bottom: none;
+    white-space: nowrap;
+  }
+
+  .site-subtitle {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .header-right a {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    border-bottom: none;
+  }
+
+  .header-right a:hover {
+    color: var(--color-text);
+  }
+
+  .lang-btn {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    background: none;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .lang-btn:hover {
+    border-color: var(--color-text);
+    color: var(--color-text);
+  }
+
+  @media (max-width: 640px) {
+    .site-subtitle {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  function initLang() {
+    const saved = localStorage.getItem('lang') || 'zh';
+    if (saved === 'en') {
+      document.documentElement.classList.add('lang-en');
+    }
+  }
+
+  function toggleLang() {
+    const html = document.documentElement;
+    const isEn = html.classList.toggle('lang-en');
+    localStorage.setItem('lang', isEn ? 'en' : 'zh');
+  }
+
+  initLang();
+
+  document.getElementById('lang-toggle')?.addEventListener('click', toggleLang);
+
+  document.addEventListener('astro:after-swap', () => {
+    initLang();
+    document.getElementById('lang-toggle')?.addEventListener('click', toggleLang);
+  });
+</script>

@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<BaseLayout>
+  <section class="intro">
+    <p data-lang="zh">
+      <span class="dot-decoration dot-decoration--active"></span>
+      记录心流时刻，思考 Agent 时代的变革与可能。
+    </p>
+    <p data-lang="en">
+      <span class="dot-decoration dot-decoration--active"></span>
+      Documenting flow states, exploring the transformation and possibilities of the Agent era.
+    </p>
+  </section>
+
+  <ul class="post-list">
+    {posts.map((post) => {
+      const formattedDate = post.data.date.toLocaleDateString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      });
+      return (
+        <li class="post-item">
+          <span class="post-date">{formattedDate}</span>
+          <h2 class="post-title">
+            <a href={`/posts/${post.id}`} data-lang="zh">{post.data.title}</a>
+            <a href={`/posts/${post.id}`} data-lang="en">{post.data.titleEn}</a>
+          </h2>
+          <p class="post-excerpt" data-lang="zh">{post.data.description}</p>
+          <p class="post-excerpt" data-lang="en">{post.data.descriptionEn}</p>
+          {post.data.tags.length > 0 && (
+            <div style="margin-top: 0.5rem;">
+              {post.data.tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          )}
+        </li>
+      );
+    })}
+  </ul>
+</BaseLayout>
+
+<style>
+  .intro {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .intro p {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    margin-top: 0;
+  }
+</style>
