@@ -1,6 +1,8 @@
-# CLAUDE.md
+@AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+# CLAUDE.md — Technical Reference
+
+> Agent 启动协议见 AGENTS.md（已自动加载）。以下为技术文档，供开发参考。
 
 ## Commands
 
