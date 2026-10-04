@@ -2,17 +2,37 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 const allPosts = await getCollection('posts');
-const posts = allPosts.filter(p => p.data.section === 'writing').sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const posts = allPosts.filter(p => !p.data.placeholder).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const pendingPosts = allPosts.filter(p => p.data.placeholder).sort((a, b) => a.data.order - b.data.order);
+const featuredPosts = posts.filter(p => p.data.featured);
+const dateLabel = (date: Date) => date.toISOString().slice(0, 10);
 const topics = allPosts.filter(p => p.data.section === 'perspectives').sort((a, b) => a.data.order - b.data.order);
 const toolkitPosts = allPosts.filter(p => p.data.section === 'toolkit').sort((a, b) => a.data.order - b.data.order);
 ---
 <BaseLayout title="惠远 · 首页原型">
-<section class="hero"><h1>惠远</h1><p class="meaning"><span data-lang="zh">普惠众生，利益长远。</span><span data-lang="en">Benefit all, benefit long.</span></p><div class="hero-rule"><span>01 — 06</span><span data-lang="zh">向下探索 ↓</span><span data-lang="en">EXPLORE BELOW ↓</span></div></section>
+<section class="hero"><h1>惠远</h1><p class="meaning"><span data-lang="zh">普惠众生，利益长远。</span><span data-lang="en">Benefit all, benefit long.</span></p></section>
 <section class="featured-grid" aria-label="Featured entries">
 <article id="resume" class="feature-card"><h2><span data-lang="zh">简历</span><span data-lang="en">Resume</span></h2><a class="article-link" href="/resume.pdf" target="_blank" rel="noopener"><span data-lang="zh">查看简历</span><span data-lang="en">View resume</span><span aria-hidden="true">↗</span></a><a class="article-link" href="/resume.pdf" download="xuanpu_zhang_resume.pdf"><span data-lang="zh">下载 PDF</span><span data-lang="en">Download PDF</span><span aria-hidden="true">↓</span></a></article>
 <article id="projects" class="feature-card"><h2><span data-lang="zh">精选开源项目</span><span data-lang="en">Selected open source</span></h2><span class="pending"><span data-lang="zh">精选名单待提供 ↗</span><span data-lang="en">Selection pending ↗</span></span></article>
-<article id="blog" class="feature-card"><h2><span data-lang="zh">文章</span><span data-lang="en">Writing</span></h2>{posts.map(p=><a class="article-link" href={`/posts/${p.id}/`}><span data-lang="zh">{p.data.title}</span><span data-lang="en">{p.data.titleEn}</span><span aria-hidden="true">↗</span></a>)}</article>
+</section>
+<section id="blog" class="blog-hub" aria-labelledby="blog-title">
+  <div class="section-title"><h2 id="blog-title">Blog</h2></div>
+  <div class="blog-columns">
+    <details class="blog-panel" data-expandable data-blog-view="timeline" open>
+      <summary><span data-lang="zh">按时间</span><span data-lang="en">By date</span><span class="disclosure-icon" aria-hidden="true">+</span></summary>
+      <div class="blog-panel-body"><ol class="blog-list">
+        {posts.map(p => <li><a class="blog-entry" href={`/posts/${p.id}/`}><time datetime={dateLabel(p.data.date)}>{dateLabel(p.data.date)}</time><span class="entry-title"><span data-lang="zh">{p.data.title}</span><span data-lang="en">{p.data.titleEn}</span></span><span class="entry-arrow" aria-hidden="true">↗</span></a></li>)}
+        {pendingPosts.map(p => <li><a class="blog-entry" href={`/posts/${p.id}/`}><span class="entry-status"><span data-lang="zh">待补充</span><span data-lang="en">Coming soon</span></span><span class="entry-title"><span data-lang="zh">{p.data.title}</span><span data-lang="en">{p.data.titleEn}</span></span><span class="entry-arrow" aria-hidden="true">↗</span></a></li>)}
+      </ol></div>
+    </details>
+    <details class="blog-panel" data-expandable data-blog-view="featured" open>
+      <summary><span data-lang="zh">精选文章</span><span data-lang="en">Featured</span><span class="disclosure-icon" aria-hidden="true">+</span></summary>
+      <div class="blog-panel-body"><ul class="blog-list featured-list">
+        {featuredPosts.map(p => <li><a class="blog-entry" href={`/posts/${p.id}/`}><span class="entry-title"><span data-lang="zh">{p.data.title}</span><span data-lang="en">{p.data.titleEn}</span></span><span class="entry-arrow" aria-hidden="true">↗</span></a></li>)}
+      </ul></div>
+    </details>
+  </div>
 </section>
 <section id="toolkit" class="toolkit"><div class="section-title"><h2>Toolkit</h2><a href="#toolkit-details"><span data-lang="zh">查看 Toolkit ↓</span><span data-lang="en">Explore Toolkit ↓</span></a></div><div id="toolkit-details" class="toolkit-grid">{toolkitPosts.map(p => <article><h3><a href={`/posts/${p.id}/`}><span data-lang="zh">{p.data.title}</span><span data-lang="en">{p.data.titleEn}</span></a></h3></article>)}</div></section>
-<section class="perspectives"><div class="section-title"><h2><span data-lang="zh">想法，慢慢展开。</span><span data-lang="en">Room for longer thoughts.</span></h2></div>{topics.map((p,i)=><a class="topic" href={`/posts/${p.id}/`}><span class="topic-number">0{i+1}</span><h3><span data-lang="zh">{p.data.title}</span><span data-lang="en">{p.data.titleEn}</span></h3><span aria-hidden="true">↗</span></a>)}</section>
+<section class="perspectives"><div class="section-title"><h2><span data-lang="zh">想法，慢慢展开。</span><span data-lang="en">Room for longer thoughts.</span></h2></div>{topics.map(p=><a class="topic" href={`/posts/${p.id}/`}><h3><span data-lang="zh">{p.data.title}</span><span data-lang="en">{p.data.titleEn}</span></h3><span aria-hidden="true">↗</span></a>)}</section>
 </BaseLayout>

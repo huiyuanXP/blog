@@ -13,6 +13,7 @@ const posts = defineCollection({
     section: z.enum(['writing', 'perspectives', 'toolkit']).default('writing'),
     order: z.number().default(0),
     placeholder: z.boolean().default(false),
+    featured: z.boolean().default(false),
   }),
 });
 

@@ -1,0 +1,94 @@
+<script>
+ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+ const selector = 'button,.feature-card,.toolkit-grid article,.topic,.blog-entry,.back-link,.article-return,.prototype-header a,.prototype-footer a,summary';
+ const surfaces = [...document.querySelectorAll<HTMLElement>(selector)].filter(el => !el.closest('.style-overlay'));
+ function twin(index: number) {
+  return document.querySelector('.style-overlay')?.querySelectorAll<HTMLElement>(selector)[index];
+ }
+ surfaces.forEach((el, index) => {
+  el.classList.add('motion-surface');
+  twin(index)?.classList.add('motion-surface');
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  let frame = 0;
+  el.addEventListener('pointermove', event => {
+   cancelAnimationFrame(frame);
+   frame = requestAnimationFrame(() => {
+    const rect = el.getBoundingClientRect();
+    const x = Math.max(0, Math.min(1, (event.clientX - rect.x) / rect.width));
+    const y = Math.max(0, Math.min(1, (event.clientY - rect.y) / rect.height));
+    [el, twin(index)].forEach(target => {
+     if (!target) return;
+     target.classList.add('is-hovered');
+     target.style.setProperty('--glow-x', x * 100 + '%');
+     target.style.setProperty('--glow-y', y * 100 + '%');
+     if (!reducedMotion.matches) {
+      target.style.setProperty('--shadow-x', (x - .5) * 10 + 'px');
+      target.style.setProperty('--shadow-y', 5 + y * 8 + 'px');
+     }
+    });
+   });
+  });
+  el.addEventListener('pointerleave', () => {
+   cancelAnimationFrame(frame);
+   [el, twin(index)].forEach(target => target?.classList.remove('is-hovered'));
+  });
+ });
+ const finishExpansions = new Set<() => void>();
+ document.addEventListener('style:beforepreview', () => finishExpansions.forEach(finish => finish()));
+ document.querySelectorAll<HTMLDetailsElement>('details[data-expandable]').forEach(details => {
+  const summary = details.querySelector<HTMLElement>('summary')!;
+  let expanded = details.open;
+  let finish: (() => void) | undefined;
+  summary.addEventListener('click', event => {
+   event.preventDefault();
+   const next = !expanded;
+   const copy = document.querySelector('.style-overlay')?.querySelector<HTMLDetailsElement>(`details[data-blog-view="${details.dataset.blogView}"]`);
+   const panels = copy ? [details, copy] : [details];
+   const bodies = panels.map(panel => panel.querySelector<HTMLElement>('.blog-panel-body')!);
+   const heights = bodies.map((body, i) => panels[i].open ? body.getBoundingClientRect().height : 0);
+   const opacity = details.open ? getComputedStyle(bodies[0]).opacity : '0';
+   finish?.();
+   expanded = next;
+   panels.forEach(panel => {
+    panel.open = true;
+    panel.querySelector('summary')!.setAttribute('aria-expanded', String(expanded));
+   });
+   const animations: Animation[] = [];
+   const done = () => {
+    animations.forEach(animation => animation.cancel());
+    panels.forEach(panel => panel.open = expanded);
+    bodies.forEach(body => {body.style.height = ''; body.style.overflow = '';});
+    finishExpansions.delete(done);
+    finish = undefined;
+   };
+   if (reducedMotion.matches) {done(); return;}
+   bodies.forEach((body, i) => {
+    body.style.height = heights[i] + 'px';
+    body.style.overflow = 'hidden';
+    animations.push(body.animate([
+     {height: heights[i] + 'px', opacity},
+     {height: (expanded ? body.scrollHeight : 0) + 'px', opacity: expanded ? 1 : 0},
+    ], {duration:320, easing:'cubic-bezier(.16,1,.3,1)', fill:'forwards'}));
+   });
+   finish = done;
+   finishExpansions.add(done);
+   animations[0].onfinish = done;
+  });
+ });
+ const navLinks = document.querySelectorAll<HTMLAnchorElement>('#site-surface > header nav a');
+ function updateNavigation() {
+  const isPost = location.pathname.startsWith('/posts/');
+  const hash = isPost ? '#blog' : location.hash;
+  navLinks.forEach(link => {
+   const selected = link.hash === hash;
+   const copy = document.querySelector('.style-overlay')?.querySelector<HTMLAnchorElement>(`nav a[href="${link.getAttribute('href')}"]`);
+   [link, copy].forEach(target => {
+    if (!target) return;
+    if (selected) target.setAttribute('aria-current', isPost ? 'page' : 'location');
+    else target.removeAttribute('aria-current');
+   });
+  });
+ }
+ updateNavigation();
+ addEventListener('hashchange', updateNavigation);
+</script>

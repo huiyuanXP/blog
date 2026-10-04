@@ -1,6 +1,5 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import { ui } from '../i18n/translations';
 
 interface Props {
   title: string;
@@ -21,9 +20,9 @@ const formattedDate = date.toLocaleDateString('zh-CN', {
 <BaseLayout title={`${title} - HuiYuan`}>
   <article>
     <header class="post-header">
-      <a href="/" class="back-link">
-        <span data-lang="zh">&larr; {ui.zh['post.back']}</span>
-        <span data-lang="en">&larr; {ui.en['post.back']}</span>
+      <a href="/#blog" class="back-link">
+        <span data-lang="zh">&larr; 所有文章</span>
+        <span data-lang="en">&larr; All articles</span>
       </a>
       {placeholder ? <p class="post-date"><span data-lang="zh">内容待补充</span><span data-lang="en">Content coming soon</span></p> : <span class="post-date">{formattedDate}</span>}
       <h1 data-lang="zh">{title}</h1>
@@ -39,6 +38,7 @@ const formattedDate = date.toLocaleDateString('zh-CN', {
     <div class="post-content">
       <slot />
     </div>
+    <a href="/#blog" class="article-return"><span data-lang="zh">回到 Blog</span><span data-lang="en">Back to Blog</span><span aria-hidden="true">↗</span></a>
   </article>
 </BaseLayout>
 

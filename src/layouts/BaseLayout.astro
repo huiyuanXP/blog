@@ -1,9 +1,11 @@
 ---
 import StyleChooser from '../components/StyleChooser.astro';
+import InteractionEffects from '../components/InteractionEffects.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import '../styles/prototype.css';
+import '../styles/interactions.css';
 
 interface Props {
   title?: string;
@@ -30,5 +32,6 @@ const { title = 'HuiYuan' } = Astro.props;
     <Footer />
     </div>
     <StyleChooser />
+    <InteractionEffects />
   </body>
 </html>

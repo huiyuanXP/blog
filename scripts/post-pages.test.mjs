@@ -26,3 +26,28 @@ test('Hello World is removed from source, homepage and generated routes', async 
   assert.ok(!home.includes('/posts/hello-world/'));
   await assert.rejects(access(new URL('dist/posts/hello-world/index.html', root)));
 });
+
+test('Blog groups published dates in descending order and featured entries from Markdown', async () => {
+  const timeline = home.match(/data-blog-view="timeline"[^>]*>([\s\S]*?)<\/details>/)?.[1];
+  const featured = home.match(/data-blog-view="featured"[^>]*>([\s\S]*?)<\/details>/)?.[1];
+  assert.ok(timeline && featured, 'both Blog columns must be present');
+  const dates = [...timeline.matchAll(/datetime="([^"]+)"/g)].map(match => match[1]);
+  assert.deepEqual(dates, [...dates].sort().reverse());
+  const selected = [];
+  for (const file of files) {
+    const source = await readFile(new URL(`src/content/posts/${file}`, root), 'utf8');
+    if (/^featured: true$/m.test(source) && !/^placeholder: true$/m.test(source)) selected.push(file.slice(0, -3));
+  }
+  const links = [...featured.matchAll(/href="\/posts\/([^/]+)\/"/g)].map(match => match[1]);
+  assert.deepEqual(links.sort(), selected.sort());
+  assert.ok(!home.includes('hero-rule') && !home.includes('EXPLORE BELOW'));
+});
+
+test('every article guides readers back to Blog and selects the Blog navigation', async () => {
+  for (const file of files) {
+    const page = await readFile(new URL(`dist/posts/${file.slice(0, -3)}/index.html`, root), 'utf8');
+    assert.ok(page.includes('href="/#blog" class="back-link"'), `${file}: back link misses Blog`);
+    assert.ok(page.includes('href="/#blog" class="article-return"'), `${file}: end link misses Blog`);
+    assert.ok(page.includes('href="/#blog" aria-current="page"'), `${file}: Blog navigation is not selected`);
+  }
+});

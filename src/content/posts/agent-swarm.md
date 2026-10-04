@@ -5,6 +5,7 @@ description: '从极简 agent 到多 agent 蜂群，复杂性从未消失——�
 descriptionEn: 'From minimalist agents to multi-agent swarms, complexity never disappears — it just moves.'
 date: 2026-03-07
 tags: ['agent', 'multi-agent', 'context-engineering', 'thinking']
+featured: true
 ---
 
 <div data-lang="zh">

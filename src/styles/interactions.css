@@ -1,0 +1,39 @@
+:root{--ease-out:cubic-bezier(.16,1,.3,1)}
+.motion-surface{position:relative;isolation:isolate;--glow-x:50%;--glow-y:50%;--shadow-x:0px;--shadow-y:8px;transition:background-color 240ms var(--ease-out),box-shadow 240ms var(--ease-out),border-color 240ms var(--ease-out),translate 240ms var(--ease-out)}
+.motion-surface::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;pointer-events:none;background:radial-gradient(180px circle at var(--glow-x) var(--glow-y),color-mix(in srgb,var(--accent) 12%,transparent),transparent 72%);opacity:0;transition:opacity 240ms var(--ease-out)}
+.motion-surface.is-hovered::before,.motion-surface:focus-visible::before{opacity:1}
+@media(hover:hover) and (pointer:fine){.motion-surface.is-hovered{box-shadow:var(--shadow-x) var(--shadow-y) 26px color-mix(in srgb,var(--color-text) 10%,transparent);translate:0 -1px}.feature-card.is-hovered{translate:0 -3px}}
+button:active,.blog-entry:active,.topic:active{translate:0 1px;transition-duration:80ms}
+.prototype-header nav{gap:8px}
+.prototype-header nav a{padding:0 12px;border-radius:100px;white-space:nowrap}
+.prototype-header nav a[aria-current]{background:color-mix(in srgb,var(--accent) 10%,var(--panel));box-shadow:inset 0 0 0 1px var(--color-border)}
+[id]{scroll-margin-top:24px}
+.blog-hub{margin-bottom:80px}
+.blog-columns{display:grid;grid-template-columns:1.15fr 1fr;gap:48px;align-items:start}
+.blog-panel{min-width:0}
+.blog-panel summary{display:flex;align-items:center;gap:12px;padding:16px 12px;border-bottom:1px solid var(--color-border);font-size:20px;font-weight:500;cursor:pointer;list-style:none;border-radius:12px 12px 0 0}
+.blog-panel summary::-webkit-details-marker{display:none}
+.disclosure-icon{margin-left:auto;font-size:24px;font-weight:300;transition:transform 320ms var(--ease-out)}
+.blog-panel[open] .disclosure-icon{transform:rotate(45deg)}
+.blog-panel summary[aria-expanded=false] .disclosure-icon{transform:rotate(0)}
+.blog-panel-body{padding-top:8px}
+.blog-list{list-style:none;padding:0;margin:0}
+.blog-entry{display:grid;grid-template-columns:90px minmax(0,1fr) 16px;gap:16px;align-items:center;min-height:64px;padding:16px 12px;border:0;border-radius:12px;font-size:15px}
+.blog-entry time,.entry-status{font:11px var(--font-mono);color:var(--color-text-muted)}
+.entry-title{min-width:0}
+.entry-arrow{color:var(--color-text-muted);transition:transform 240ms var(--ease-out)}
+.blog-entry:hover .entry-arrow{transform:translate(2px,-2px)}
+.featured-list .blog-entry{grid-template-columns:minmax(0,1fr) 16px;font-size:20px;min-height:96px}
+.article-return{display:flex;align-items:center;justify-content:space-between;gap:24px;margin:64px 0 32px;padding:20px 16px;border-top:1px solid var(--color-border);border-bottom:0;border-radius:12px;font-size:16px}
+.back-link{padding:8px 12px;margin-left:-12px;border-radius:12px}
+.topic{grid-template-columns:1fr 20px;border-bottom:0}
+.topic>span:last-child{grid-column:2}
+@keyframes page-enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.hero,.post-header{animation:page-enter 480ms var(--ease-out) both}
+@media(max-width:1000px){.prototype-header{flex-wrap:wrap;gap:12px;padding:20px 24px}.prototype-header nav{order:3;flex-basis:100%;gap:8px;overflow-x:auto}.header-controls{margin-left:auto}}
+@media(max-width:700px){.blog-columns{grid-template-columns:1fr;gap:32px}.featured-list .blog-entry{min-height:68px;font-size:17px}.blog-entry{grid-template-columns:80px minmax(0,1fr) 16px;gap:10px}.blog-hub{margin-bottom:64px}.prototype-header{padding:18px 20px}.prototype-header nav a{padding:0 10px}}
+@media(prefers-reduced-motion:reduce){.motion-surface.is-hovered,.feature-card.is-hovered,button:active,.blog-entry:active,.topic:active{translate:none}.entry-arrow{transform:none!important}}
+@media(forced-colors:active){.motion-surface::before{display:none}.prototype-header nav a[aria-current]{outline:1px solid CanvasText}}
+
+html.style-preview .hero,html.style-preview .post-header{animation:none}
+.style-choice.motion-surface{position:absolute}

@@ -5,6 +5,7 @@ description: '从重型编排到极简主义，再到 Context Engineering——A
 descriptionEn: 'From heavy orchestration to minimalism to Context Engineering — the rise and fall of AI frameworks reveals a deeper pattern.'
 date: 2026-03-06
 tags: ['agent', 'langchain', 'context-engineering', 'thinking']
+featured: true
 ---
 
 <div data-lang="zh">
