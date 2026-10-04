@@ -1,0 +1,9 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { post: CollectionEntry<'posts'>; }
+const { post } = Astro.props;
+---
+<div class="planned-entry" data-planned-id={post.id} data-topic-confirmed={post.data.topicConfirmed}>
+  <span class="planned-status"><span data-lang="zh">待写</span><span data-lang="en">Planned</span></span>
+  <span class="planned-title"><span data-lang="zh">{post.data.title}</span><span data-lang="en">{post.data.titleEn}</span></span>
+</div>

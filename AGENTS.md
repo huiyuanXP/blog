@@ -65,17 +65,18 @@
 
 ### Blog 入口
 
-顶部 Blog 导航统一指向首页 `/#blog`，文章页的返回入口也指向该位置。Blog 分为按日期倒序的文章列表和精选文章两栏；占位文章放在正式文章后面，显示待补充状态。精选由 Markdown 的 `featured: true` 指定，展开、选中与悬停反馈共用全站交互。
+顶部 Blog 导航统一指向首页 `/#blog`，文章页的返回入口也指向该位置。Blog 分为按日期倒序的文章列表和精选文章两栏；待写文章放在正式文章后面，显示「待写」状态且不附阅读链接。精选由 Markdown 的 `featured: true` 指定，展开、选中与悬停反馈共用全站交互。
 
 ### 文章页面与占位约束
 
 - 每篇文章及首页的文章占位入口都对应 `src/content/posts/<slug>.md`，由统一路由生成独立的 `/posts/<slug>/` 页面。
 - 标题、描述、正文和占位状态以该 Markdown 为唯一来源；首页读取对应文件的 metadata，两个风格共用内容。
-- 尚无正文时先创建双语 Markdown 骨架，设置 `placeholder: true`，页面显示「内容待补充」，日期仅记录骨架创建时间，不显示为发布日期。补齐正式内容后设为 `false` 并填写实际发布日期。
-- `section` 指定首页区域（`writing`、`perspectives`、`toolkit`），`order` 指定主题及 Toolkit 的展示顺序。新增入口须同时具备可访问的独立页面。
-- 占位骨架只包含待补充提示；正式博文仍按上述 three-minds 流程产出。
+- 尚无正文时创建仅有 frontmatter 的待写 Markdown，设置 `placeholder: true`；记录原始中文标题、英文标题、序号、暂定主题与交叉引用，不写正文、摘要或日期。页面显示「待写」，首页不附阅读全文链接。正式成稿后设为 `false` 并补充实际发布日期、已确认摘要与正文。
+- 待写记录由 `topic` 暂定归属到六个栏目，`topicConfirmed: false` 表示尚未由用户确认；栏目顺序以 `src/data/topics.ts` 为准。`order` 保留原清单的独立序号，`toolkit: codex` 表示已明确的 Toolkit 交叉引用。各位置读取同一 Markdown 记录。
+- 待写页仅展示标题与状态；正式博文仍按上述 three-minds 流程产出。
+- 处理写作清单或未定稿副标题时，读取 `WRITING-BACKLOG.md`。其中六个 Agent 副标题已经按用户要求在下一次互动询问，当前等待归属答复；未确认前不挂到任何文章下。
 
-### 双语格式规范
+### 双语格式规范（正式文章）
 
 ```markdown
 ---

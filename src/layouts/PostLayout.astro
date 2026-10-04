@@ -4,13 +4,13 @@ import BaseLayout from './BaseLayout.astro';
 interface Props {
   title: string;
   titleEn: string;
-  date: Date;
+  date?: Date;
   tags?: string[];
   placeholder?: boolean;
 }
 
 const { title, titleEn, date, tags = [], placeholder = false } = Astro.props;
-const formattedDate = date.toLocaleDateString('zh-CN', {
+const formattedDate = date?.toLocaleDateString('zh-CN', {
   year: 'numeric',
   month: '2-digit',
   day: '2-digit',
@@ -24,7 +24,7 @@ const formattedDate = date.toLocaleDateString('zh-CN', {
         <span data-lang="zh">&larr; 所有文章</span>
         <span data-lang="en">&larr; All articles</span>
       </a>
-      {placeholder ? <p class="post-date"><span data-lang="zh">内容待补充</span><span data-lang="en">Content coming soon</span></p> : <span class="post-date">{formattedDate}</span>}
+      {placeholder ? <p class="post-date"><span data-lang="zh">待写</span><span data-lang="en">Planned</span></p> : <span class="post-date">{formattedDate}</span>}
       <h1 data-lang="zh">{title}</h1>
       <h1 data-lang="en">{titleEn}</h1>
       {tags.length > 0 && (
