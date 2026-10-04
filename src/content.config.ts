@@ -13,14 +13,5 @@ const posts = defineCollection({
   }),
 });
 
-const diary = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/diary' }),
-  schema: z.object({
-    date: z.coerce.date(),
-    summary: z.string(),      // 一句话中文摘要
-    summaryEn: z.string(),    // one-sentence English summary
-    wordCount: z.number(),    // 汉字字数
-  }),
-});
-
-export const collections = { posts, diary };
+// Private diary files intentionally excluded from content loading and build artifacts.
+export const collections = { posts };

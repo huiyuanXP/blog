@@ -1,0 +1,27 @@
+<section id="style-chooser" aria-labelledby="choose-heading" hidden>
+  <div class="choice-heading"><h2 id="choose-heading"><span data-lang="zh">选择一种阅读气质</span><span data-lang="en">Choose your reading style</span></h2><p><span data-lang="zh">拖动后松手，或直接选择。左半释放 → 原创；右半释放 → 极简。</span><span data-lang="en">Drag and release, or choose a button. Release left → expressive; right → minimal.</span></p></div>
+  <div class="comparison"><div class="sample expressive"><small>01 / EXPRESSIVE</small><strong>辉远</strong><p>普惠众生<br/>利益长远</p></div><div class="sample minimal"><small>02 / MINIMAL</small><strong>辉远</strong><p>普惠众生<br/>利益长远</p></div><input id="style-divider" type="range" min="0" max="100" value="50" aria-label="风格分隔线 / Style divider" aria-valuetext="50%：松手选择极简 / release for minimal" /></div>
+  <div class="choice-actions"><button data-style="expressive"><span data-lang="zh">选择原创</span><span data-lang="en">Choose expressive</span></button><button data-style="minimal"><span data-lang="zh">选择极简</span><span data-lang="en">Choose minimal</span></button></div>
+  <p class="prototype-note"><span data-lang="zh">原型建议值：50% 阈值，中点选极简；本机记忆 30 天。均待确认。</span><span data-lang="en">Prototype defaults: 50% threshold; midpoint selects minimal; remember locally for 30 days. Pending approval.</span></p>
+</section>
+<script>
+ const root = document.documentElement;
+ const chooser = document.getElementById('style-chooser')!;
+ const divider = document.getElementById('style-divider') as HTMLInputElement;
+ const duration = 30 * 86400000; // Adjustable prototype recommendation, not final policy.
+ function choose(style: string) {
+  root.dataset.style = style;
+  try { localStorage.setItem('blog-style', JSON.stringify({style, expires: Date.now()+duration})); } catch {}
+  chooser.hidden = true;
+  document.getElementById('style-toggle')?.focus({preventScroll:true});
+ }
+ try { const saved = JSON.parse(localStorage.getItem('blog-style') || 'null'); if(saved && saved.expires > Date.now() && ['expressive','minimal'].includes(saved.style)) root.dataset.style=saved.style; else chooser.hidden=false; } catch { chooser.hidden=false; }
+ chooser.querySelectorAll<HTMLButtonElement>('[data-style]').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.style!)));
+ let dragging=false;
+ divider.addEventListener('pointerdown',()=>dragging=true);
+ divider.addEventListener('input',()=>{chooser.style.setProperty('--split',divider.value+'%');divider.setAttribute('aria-valuetext',`${divider.value}%: ${Number(divider.value)<50?'expressive':'minimal'}`);});
+ divider.addEventListener('pointerup',()=>{if(dragging){dragging=false;choose(Number(divider.value)<50?'expressive':'minimal');}});
+ divider.addEventListener('pointercancel',()=>{dragging=false;divider.value='50';chooser.style.setProperty('--split','50%');divider.setAttribute('aria-valuetext','50%: minimal');});
+ divider.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose(Number(divider.value)<50?'expressive':'minimal');}});
+ document.getElementById('style-toggle')?.addEventListener('click',()=>{chooser.hidden=false;chooser.scrollIntoView({behavior:'instant'});divider.focus({preventScroll:true});});
+</script>
