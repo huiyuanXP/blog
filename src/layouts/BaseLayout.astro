@@ -22,11 +22,13 @@ const { title = 'HuiYuan' } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
+    <div id="site-surface" class="site-surface">
     <Header />
-    <StyleChooser />
     <main class="container">
       <slot />
     </main>
     <Footer />
+    </div>
+    <StyleChooser />
   </body>
 </html>

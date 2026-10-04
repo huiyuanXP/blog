@@ -10,6 +10,9 @@ const posts = defineCollection({
     descriptionEn: z.string(),
     date: z.coerce.date(),
     tags: z.array(z.string()).default([]),
+    section: z.enum(['writing', 'perspectives', 'toolkit']).default('writing'),
+    order: z.number().default(0),
+    placeholder: z.boolean().default(false),
   }),
 });
 

@@ -1,27 +1,170 @@
-<section id="style-chooser" aria-labelledby="choose-heading" hidden>
-  <div class="choice-heading"><h2 id="choose-heading"><span data-lang="zh">选择一种阅读气质</span><span data-lang="en">Choose your reading style</span></h2><p><span data-lang="zh">拖动后松手，或直接选择。左半释放 → 原创；右半释放 → 极简。</span><span data-lang="en">Drag and release, or choose a button. Release left → expressive; right → minimal.</span></p></div>
-  <div class="comparison"><div class="sample expressive"><small>01 / EXPRESSIVE</small><strong>辉远</strong><p>普惠众生<br/>利益长远</p></div><div class="sample minimal"><small>02 / MINIMAL</small><strong>辉远</strong><p>普惠众生<br/>利益长远</p></div><input id="style-divider" type="range" min="0" max="100" value="50" aria-label="风格分隔线 / Style divider" aria-valuetext="50%：松手选择极简 / release for minimal" /></div>
-  <div class="choice-actions"><button data-style="expressive"><span data-lang="zh">选择原创</span><span data-lang="en">Choose expressive</span></button><button data-style="minimal"><span data-lang="zh">选择极简</span><span data-lang="en">Choose minimal</span></button></div>
-  <p class="prototype-note"><span data-lang="zh">原型建议值：50% 阈值，中点选极简；本机记忆 30 天。均待确认。</span><span data-lang="en">Prototype defaults: 50% threshold; midpoint selects minimal; remember locally for 30 days. Pending approval.</span></p>
-</section>
+<div id="style-chooser" class="style-chooser" hidden>
+  <div id="style-divider" class="style-divider" role="slider" tabindex="0" aria-orientation="horizontal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-label="风格分隔线：向右增加原创，向左增加极简 / Style divider: right for expressive, left for minimal" aria-valuetext="原创 50%，极简 50% / Expressive 50%, minimal 50%"><span class="style-grip" aria-hidden="true">↔</span></div>
+  <button class="style-choice" data-style="minimal"><span data-lang="zh">选择极简</span><span data-lang="en">Choose minimal</span></button>
+  <button class="style-choice" data-style="expressive"><span data-lang="zh">选择原创</span><span data-lang="en">Choose expressive</span></button>
+</div>
 <script>
+ import { snapTarget, easedSplit } from '../utils/style-motion';
  const root = document.documentElement;
+ const surface = document.getElementById('site-surface')!;
  const chooser = document.getElementById('style-chooser')!;
- const divider = document.getElementById('style-divider') as HTMLInputElement;
- const duration = 30 * 86400000; // Adjustable prototype recommendation, not final policy.
- function choose(style: string) {
+ const divider = document.getElementById('style-divider')!;
+ const duration = 30 * 86400000;
+ let overlay: HTMLElement | undefined;
+ let split = 50;
+ let frame = 0;
+ let guideFrame = 0;
+ let returnGrip: HTMLElement | undefined;
+ let emphasis: Animation | undefined;
+ function stopGuide() {
+  cancelAnimationFrame(guideFrame);
+  returnGrip?.remove();
+  returnGrip = undefined;
+  emphasis?.cancel();
+ }
+ function guideToStyle(from: DOMRect) {
+  stopGuide();
+  const toggle = document.getElementById('style-toggle')!;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  returnGrip = document.createElement('div');
+  returnGrip.className = 'style-return';
+  returnGrip.setAttribute('aria-hidden', 'true');
+  returnGrip.innerHTML = '<span>↔</span>';
+  document.body.append(returnGrip);
+  const targetColors = getComputedStyle(toggle);
+  returnGrip.animate([
+   {background:'#f5f5f3', color:'#161616'},
+   {background:targetColors.backgroundColor, color:targetColors.color},
+  ], {duration:800, easing:'ease-out', fill:'forwards'});
+  const started = performance.now();
+  const initialX = from.x + from.width / 2;
+  const initialY = from.y + from.height / 2;
+  const toggleRect = toggle.getBoundingClientRect();
+  if (toggleRect.top < 0 || toggleRect.bottom > innerHeight) {
+   toggle.closest('header')!.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  function fly(now: number) {
+   if (!returnGrip) return;
+   const elapsed = now - started;
+   const progress = Math.min(1, elapsed / 800);
+   const target = toggle.getBoundingClientRect();
+   const targetY = Math.max(target.height / 2, Math.min(innerHeight - target.height / 2, target.y + target.height / 2));
+   const x = easedSplit(initialX, target.x + target.width / 2, progress);
+   const y = easedSplit(initialY, targetY, progress);
+   const width = easedSplit(from.width, target.width, progress);
+   const height = easedSplit(from.height, target.height, progress);
+   Object.assign(returnGrip.style, {
+    left: x + 'px', top: y + 'px', width: width + 'px', height: height + 'px',
+    borderRadius: easedSplit(24, target.height / 2, progress) + 'px',
+   });
+   returnGrip.firstElementChild!.setAttribute('style', `opacity:${1-progress}`);
+   if (progress < 1 || (target.top < 0 && elapsed < 1600)) guideFrame = requestAnimationFrame(fly);
+   else {
+    returnGrip.remove();
+    returnGrip = undefined;
+    emphasis = toggle.animate([
+     {transform:'scale(1)', boxShadow:'0 0 0 0 transparent'},
+     {transform:'scale(1.07)', boxShadow:'0 0 0 6px var(--color-border)'},
+     {transform:'scale(1)', boxShadow:'0 0 0 0 transparent'},
+    ], {duration:400, easing:'ease-out'});
+   }
+  }
+  guideFrame = requestAnimationFrame(fly);
+ }
+ let dragging = false;
+ let dragStart = 0;
+ let startSplit = split;
+ let committedStyle = root.dataset.style;
+ function updatePreview(value: number) {
+  split = Math.max(0, Math.min(100, value));
+  overlay?.style.setProperty('--split', split + '%');
+  chooser.style.setProperty('--split', split + '%');
+  divider.setAttribute('aria-valuenow', String(Math.round(split)));
+  divider.setAttribute('aria-valuetext', `原创 ${Math.round(split)}%，极简 ${100-Math.round(split)}% / Expressive ${Math.round(split)}%, minimal ${100-Math.round(split)}%`);
+ }
+ function openPreview() {
+  stopGuide();
+  cancelAnimationFrame(frame);
+  if (!overlay) committedStyle = root.dataset.style;
+  overlay?.remove();
+  chooser.hidden = false;
+  root.classList.add('style-preview');
+  root.dataset.style = 'minimal';
+  surface.dataset.style = 'minimal';
+  // Both visual layers come from the same rendered content; the copy is inert.
+  overlay = surface.cloneNode(true) as HTMLElement;
+  overlay.removeAttribute('id');
+  overlay.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+  overlay.querySelectorAll('script').forEach(el => el.remove());
+  overlay.classList.add('style-overlay');
+  overlay.dataset.style = 'expressive';
+  overlay.setAttribute('aria-hidden', 'true');
+  overlay.inert = true;
+  surface.append(overlay);
+  updatePreview(50);
+ }
+ function commit(style: string) {
+  const gripRect = divider.querySelector('.style-grip')!.getBoundingClientRect();
+  root.classList.remove('style-preview');
   root.dataset.style = style;
+  surface.removeAttribute('data-style');
+  overlay?.remove();
+  overlay = undefined;
   try { localStorage.setItem('blog-style', JSON.stringify({style, expires: Date.now()+duration})); } catch {}
   chooser.hidden = true;
   document.getElementById('style-toggle')?.focus({preventScroll:true});
+  guideToStyle(gripRect);
  }
- try { const saved = JSON.parse(localStorage.getItem('blog-style') || 'null'); if(saved && saved.expires > Date.now() && ['expressive','minimal'].includes(saved.style)) root.dataset.style=saved.style; else chooser.hidden=false; } catch { chooser.hidden=false; }
- chooser.querySelectorAll<HTMLButtonElement>('[data-style]').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.style!)));
- let dragging=false;
- divider.addEventListener('pointerdown',()=>dragging=true);
- divider.addEventListener('input',()=>{chooser.style.setProperty('--split',divider.value+'%');divider.setAttribute('aria-valuetext',`${divider.value}%: ${Number(divider.value)<50?'expressive':'minimal'}`);});
- divider.addEventListener('pointerup',()=>{if(dragging){dragging=false;choose(Number(divider.value)<50?'expressive':'minimal');}});
- divider.addEventListener('pointercancel',()=>{dragging=false;divider.value='50';chooser.style.setProperty('--split','50%');divider.setAttribute('aria-valuetext','50%: minimal');});
- divider.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose(Number(divider.value)<50?'expressive':'minimal');}});
- document.getElementById('style-toggle')?.addEventListener('click',()=>{chooser.hidden=false;chooser.scrollIntoView({behavior:'instant'});divider.focus({preventScroll:true});});
+ function settle(target: number) {
+  cancelAnimationFrame(frame);
+  const start = split;
+  const style = target === 100 ? 'expressive' : 'minimal';
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || start === target) {
+   updatePreview(target);
+   commit(style);
+   return;
+  }
+  const started = performance.now();
+  function tick(now: number) {
+   const progress = Math.min(1, (now - started) / 600);
+   updatePreview(easedSplit(start, target, progress));
+   if (progress < 1) frame = requestAnimationFrame(tick);
+   else commit(style);
+  }
+  frame = requestAnimationFrame(tick);
+ }
+ let remembered = false;
+ try {
+  const saved = JSON.parse(localStorage.getItem('blog-style') || 'null');
+  if(saved && saved.expires > Date.now() && ['expressive','minimal'].includes(saved.style)) {
+   root.dataset.style = saved.style;
+   remembered = true;
+  }
+ } catch {}
+ if (!remembered) openPreview();
+ chooser.querySelectorAll<HTMLButtonElement>('[data-style]').forEach(b=>b.addEventListener('click',()=>settle(b.dataset.style === 'expressive' ? 100 : 0)));
+ divider.addEventListener('pointerdown',e=>{
+  cancelAnimationFrame(frame);
+  dragging = true;
+  dragStart = e.clientX;
+  startSplit = split;
+  divider.setPointerCapture(e.pointerId);
+ });
+ divider.addEventListener('pointermove',e=>{
+  if (dragging) updatePreview(startSplit + (e.clientX - dragStart) / document.documentElement.clientWidth * 100);
+ });
+ divider.addEventListener('pointerup',()=>{if(dragging){dragging=false;settle(snapTarget(split));}});
+ divider.addEventListener('pointercancel',()=>{dragging=false;settle(committedStyle === 'expressive' ? 100 : 0);});
+ divider.addEventListener('keydown',e=>{
+  if (['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) {
+   e.preventDefault();
+   cancelAnimationFrame(frame);
+   updatePreview(e.key === 'Home' ? 0 : e.key === 'End' ? 100 : split + (e.key === 'ArrowRight' ? 5 : -5));
+  } else if (e.key === 'Enter' || e.key === ' ') {
+   e.preventDefault();settle(snapTarget(split));
+  } else if (e.key === 'Escape') {
+   e.preventDefault();settle(committedStyle === 'expressive' ? 100 : 0);
+  }
+ });
+ document.getElementById('style-toggle')?.addEventListener('click',()=>{openPreview();divider.focus({preventScroll:true});});
 </script>

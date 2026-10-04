@@ -7,9 +7,10 @@ interface Props {
   titleEn: string;
   date: Date;
   tags?: string[];
+  placeholder?: boolean;
 }
 
-const { title, titleEn, date, tags = [] } = Astro.props;
+const { title, titleEn, date, tags = [], placeholder = false } = Astro.props;
 const formattedDate = date.toLocaleDateString('zh-CN', {
   year: 'numeric',
   month: '2-digit',
@@ -24,7 +25,7 @@ const formattedDate = date.toLocaleDateString('zh-CN', {
         <span data-lang="zh">&larr; {ui.zh['post.back']}</span>
         <span data-lang="en">&larr; {ui.en['post.back']}</span>
       </a>
-      <span class="post-date">{formattedDate}</span>
+      {placeholder ? <p class="post-date"><span data-lang="zh">内容待补充</span><span data-lang="en">Content coming soon</span></p> : <span class="post-date">{formattedDate}</span>}
       <h1 data-lang="zh">{title}</h1>
       <h1 data-lang="en">{titleEn}</h1>
       {tags.length > 0 && (
