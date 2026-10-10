@@ -1,5 +1,11 @@
 # AGENTS.md — Blog Workspace
 
+## 委派与项目收尾
+
+新 chat/thread/session 启动时使用 sub-agent 拆分独立工作，并下传此契约。启动前核验可用性，spawn 明确指定 model/reasoning：简单短程 `gpt-6.1-sol / low`；简单长程 `gpt-6-luna / xhigh`；其他简单任务 `gpt-6-luna / high` 或 `xhigh`；复杂任务 `gpt-6.1-sol / high`。不可用则报告，不静默替换；每个子任务明确边界、验收和证据，避免覆盖他人工作。
+
+每票完成或重大改动先按 [neat-freak](https://github.com/KKKKhazix/khazix-skills/blob/main/neat-freak/SKILL.md) 对齐文档、规则和实际状态，再 commit/push 对应项目分支并验证远端可恢复版本。现有分支推送授权不包含 force-push、删除分支、自动合并或公开生产部署。风险验证使用独立 worktree、端口及数据；worktree 不隔离系统或数据库。记忆默认只读，未确认不删除工作区或证据。
+
 ## 启动协议（每次 session 开始时执行）
 
 ### Step 1 — 读共享 Profile
@@ -65,7 +71,7 @@
 
 ### Blog 入口
 
-顶部 Blog 导航统一指向首页 `/#blog`，文章页的返回入口也指向该位置。Blog 分为按日期倒序的文章列表和精选文章两栏；待写文章放在正式文章后面，显示「待写」状态且不附阅读链接。精选由 Markdown 的 `featured: true` 指定，展开、选中与悬停反馈共用全站交互。
+顶部文章菜单从公开文章集合读取双语标题与原 URL，排除待写条目。悬停临时展开；点击固定，再次点击、外部点击或 Escape 关闭并解除固定；未固定时离开触发器和菜单区域关闭。键盘与触屏均可操作，aria 状态与展开同步。文章页返回入口仍指向首页 `/#blog`。Blog 分为按日期倒序的文章列表和精选文章两栏；待写文章放在正式文章后面，显示「待写」状态且不附阅读链接。精选由 Markdown 的 `featured: true` 指定，展开、选中与悬停反馈共用全站交互。
 
 ### 文章页面与占位约束
 
@@ -82,6 +88,8 @@
 ---
 title: 中文标题
 titleEn: English Title
+description: 中文摘要
+descriptionEn: English summary
 date: YYYY-MM-DD
 tags: [tag1, tag2]
 ---
@@ -97,4 +105,4 @@ English body
 
 ### 当前任务
 
-> 等待写作任务输入。
+> 文章菜单代码及预览验收完成；生产部署另需授权与链路核实。当前功能、运行方法及未决状态以 README.md 为准。

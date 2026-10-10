@@ -1,0 +1,69 @@
+---
+import { getCollection } from 'astro:content';
+interface Props { current?: boolean; }
+const { current = false } = Astro.props;
+const posts = (await getCollection('posts')).filter(post => !post.data.placeholder).sort((a, b) => b.data.date!.getTime() - a.data.date!.getTime());
+---
+<!-- Both hover preview and click pinning use the same published article source. -->
+<div class="article-menu">
+  <button class="article-menu-trigger" type="button" aria-expanded="false" aria-current={current ? 'page' : undefined} aria-controls="article-menu-links">
+    <span data-lang="zh">文章</span><span data-lang="en">Articles</span>
+    <span aria-hidden="true" class="article-menu-chevron"></span>
+  </button>
+  <div id="article-menu-links" class="article-menu-links" hidden>
+    {posts.map(post => <a href={`/posts/${post.id}/`}>
+      <span data-lang="zh">{post.data.title}</span>
+      <span data-lang="en">{post.data.titleEn}</span>
+    </a>)}
+  </div>
+</div>
+<style>
+  .article-menu { position: relative; }
+  .article-menu-trigger { display: flex; align-items: center; gap: 8px; border: 0; border-radius: 0; background: transparent; padding: 0; min-height: 44px; }
+  .article-menu-chevron { width: 7px; height: 7px; border-right: 1px solid currentColor; border-bottom: 1px solid currentColor; transform: rotate(45deg); }
+  .article-menu-links { position: absolute; z-index: 10; top: 100%; left: 0; width: min(320px, calc(100vw - 40px)); padding: 8px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--panel); box-shadow: 0 8px 24px #0002; }
+  .article-menu-links a { display: block; padding: 12px; min-height: 44px; font-size: 14px; line-height: 1.5; }
+  .article-menu-links a:hover { background: var(--color-bg); }
+  @media (max-width: 800px) {
+    :global(.prototype-header) { position: relative; }
+    .article-menu { position: static; }
+    .article-menu-links { left: 20px; }
+    .article-menu-links::before { content: ""; position: absolute; left: 0; right: 0; top: -20px; height: 20px; }
+    :global(.prototype-header nav[aria-label="Main navigation"]) { overflow: visible; flex-wrap: wrap; }
+  }
+</style>
+<script>
+  document.querySelectorAll<HTMLElement>('.article-menu').forEach(menu => {
+    const trigger = menu.querySelector<HTMLButtonElement>('.article-menu-trigger')!;
+    const links = menu.querySelector<HTMLElement>('.article-menu-links')!;
+    let pinned = false;
+    function setOpen(open: boolean) {
+      links.hidden = !open;
+      trigger.setAttribute('aria-expanded', String(open));
+    }
+    function close() { pinned = false; setOpen(false); }
+    menu.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'mouse') setOpen(true);
+    });
+    menu.addEventListener('pointerleave', event => {
+      if (event.pointerType === 'mouse' && !pinned) setOpen(false);
+    });
+    trigger.addEventListener('click', () => {
+      if (pinned) close();
+      else { pinned = true; setOpen(true); }
+    });
+    menu.addEventListener('focusout', event => {
+      if (!pinned && !menu.contains(event.relatedTarget as Node | null)) setOpen(false);
+    });
+    document.addEventListener('click', event => {
+      if (!menu.contains(event.target as Node)) close();
+    });
+    menu.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        event.preventDefault(); close(); trigger.focus();
+      } else if (event.key === 'ArrowDown' && event.target === trigger) {
+        event.preventDefault(); setOpen(true); links.querySelector<HTMLAnchorElement>('a')?.focus();
+      }
+    });
+  });
+</script>

@@ -16,9 +16,9 @@ Bilingual (zh/en) personal blog built with Astro v5, deployed as a static site o
 
 **Bilingual system:** Single-page approach using `data-lang="zh"` / `data-lang="en"` attributes on elements. A CSS class (`lang-en`) on `<html>` toggles visibility. Language preference is stored in `localStorage`. No separate routes per language.
 
-**Content:** Blog posts live in `src/content/posts/*.md`. Each post contains both languages — frontmatter has dual fields (`title`/`titleEn`, `description`/`descriptionEn`) and the body uses `<div data-lang="zh">` / `<div data-lang="en">` sections. Content collection schema is defined in `src/content.config.ts` using Astro's glob loader.
+**Content:** Published and planned posts live in `src/content/posts/*.md`. Published posts contain both languages — frontmatter has dual fields (`title`/`titleEn`, `description`/`descriptionEn`) and the body uses `<div data-lang="zh">` / `<div data-lang="en">` sections. Content collection schema is defined in `src/content.config.ts` using Astro's glob loader. Planned entries use `placeholder: true`, bilingual titles and grouping metadata, without publication dates, summaries or body. Private diary files are excluded from content loading.
 
-**UI translations:** Static UI strings (nav, footer, labels) are in `src/i18n/translations.ts`. Both language variants are rendered at build time; JS only toggles the CSS class.
+**UI translations:** Components render both language variants at build time; JS toggles the CSS class. `src/i18n/translations.ts` is a retained legacy dictionary, currently not imported by UI components; verify consumers before editing it. The article menu reads titles from the post collection.
 
 **Layouts:** `BaseLayout.astro` wraps all pages (loads fonts, header, footer). `PostLayout.astro` extends it for article pages with back-link, date, tags, and dual-language title.
 
@@ -47,4 +47,4 @@ All three agents read `resources/writing-style/` to match the owner's tone. Outp
 
 ## Deployment
 
-Cloudflare Pages connected to GitHub repo `huiyuanXP/blog`. Every push to `main` triggers auto-build. Domain: `huiyuanxp.com`.
+See README.md for current verification and publication boundaries. The existing site is served through Cloudflare at `huiyuanxp.com`; exact Pages project, production branch, build configuration and deployment commit have not been independently verified. A review-branch push does not mean the change is merged, deployed or live verified.

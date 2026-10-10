@@ -30,7 +30,7 @@ npm run three-minds -- "基于 resources/ 中的素材，写一篇关于 [主题
 |------|------|
 | `npm run dev` | 启动开发服务器 localhost:4321 |
 | `npm run build` | 构建静态站点到 ./dist/ |
-| `npm run preview` | 预览生产构建 |
+| `npm run preview` | 本地预览 dist 构建产物 |
 
 ## 内容路径
 
@@ -46,10 +46,14 @@ npm run three-minds -- "基于 resources/ 中的素材，写一篇关于 [主题
 - **平台：** Cloudflare Pages
 - **仓库：** GitHub `huiyuanXP/blog`
 - **域名：** huiyuanxp.com
-- **触发：** push 到 main 自动构建
+- **触发：** 既有记录称 main 推送触发构建；Cloudflare 实际生产分支、构建设置和当前部署 commit 尚待授权账户核实。功能验收、GitHub 分支备份与生产发布状态见 README.md。
 
 ## 工具查找协议
 
 1. 先查本文件
 2. 再查 `~/.huiyuanclaw/TOOLS.md`
 3. 都没有 → 告诉惠远，请他帮忙找或安装
+
+## 文档收尾
+
+每票或重大改动按 [neat-freak 文本指令](https://github.com/KKKKhazix/khazix-skills/blob/main/neat-freak/SKILL.md) 同步文档与规则；本项目不依赖已安装的同名脚本。状态与验证命令见 README.md，提交和分支推送权限边界见 AGENTS.md。
