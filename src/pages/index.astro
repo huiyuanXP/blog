@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroIdentity from '../components/HeroIdentity.astro';
 import { getCollection } from 'astro:content';
 import PlannedEntry from '../components/PlannedEntry.astro';
 import { topics } from '../data/topics';
@@ -11,7 +12,8 @@ const dateLabel = (date: Date) => date.toISOString().slice(0, 10);
 const toolkitPosts = pendingPosts.filter(p => p.data.toolkit === 'codex');
 ---
 <BaseLayout title="惠远 · 首页原型">
-<section class="hero"><h1>惠远</h1><p class="meaning"><span data-lang="zh">普惠众生，利益长远。</span><span data-lang="en">Benefit all, benefit long.</span></p></section>
+<HeroIdentity />
+<div class="home-content">
 <section class="featured-grid" aria-label="Featured entries">
 <article id="resume" class="feature-card"><h2><span data-lang="zh">简历</span><span data-lang="en">Resume</span></h2><a class="article-link" href="/resume.pdf" target="_blank" rel="noopener"><span data-lang="zh">查看简历</span><span data-lang="en">View resume</span><span aria-hidden="true">↗</span></a><a class="article-link" href="/resume.pdf" download="xuanpu_zhang_resume.pdf"><span data-lang="zh">下载 PDF</span><span data-lang="en">Download PDF</span><span aria-hidden="true">↓</span></a></article>
 <article id="projects" class="feature-card"><h2><span data-lang="zh">精选开源项目</span><span data-lang="en">Selected open source</span></h2><span class="pending"><span data-lang="zh">精选名单待提供 ↗</span><span data-lang="en">Selection pending ↗</span></span></article>
@@ -37,4 +39,5 @@ const toolkitPosts = pendingPosts.filter(p => p.data.toolkit === 'codex');
 </section>
 <section id="toolkit" class="toolkit"><div class="section-title"><h2>Toolkit</h2><a href="#toolkit-details"><span data-lang="zh">查看 Toolkit ↓</span><span data-lang="en">Explore Toolkit ↓</span></a></div><div id="toolkit-details" class="toolkit-grid"><article><h3><span data-lang="zh">趁手的工具</span><span data-lang="en">Tools worth keeping</span></h3><p class="empty-state"><span data-lang="zh">工具清单待确认</span><span data-lang="en">Tool selection pending</span></p></article><article><h3><span data-lang="zh">Codex / GPT 经验</span><span data-lang="en">Codex / GPT experience</span></h3>{toolkitPosts.map(p => <PlannedEntry post={p} />)}</article></div></section>
 <section class="perspectives"><div class="section-title"><h2><span data-lang="zh">想法，慢慢展开。</span><span data-lang="en">Room for longer thoughts.</span></h2><span class="topic-provisional"><span data-lang="zh">暂定分类</span><span data-lang="en">Provisional grouping</span></span></div>{topics.map(topic => <section class="topic-group" data-topic={topic.id}><h3><span data-lang="zh">{topic.zh}</span><span data-lang="en">{topic.en}</span></h3>{pendingPosts.filter(p => p.data.topic === topic.id).map(p => <PlannedEntry post={p} />)}{!pendingPosts.some(p => p.data.topic === topic.id) && <p class="empty-state"><span data-lang="zh">暂无待写文章</span><span data-lang="en">No planned articles yet</span></p>}</section>)}</section>
+</div>
 </BaseLayout>

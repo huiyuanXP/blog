@@ -1,7 +1,7 @@
 <div id="style-chooser" class="style-chooser" hidden>
-  <div id="style-divider" class="style-divider" role="slider" tabindex="0" aria-orientation="horizontal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-label="风格分隔线：向右增加原创，向左增加极简 / Style divider: right for expressive, left for minimal" aria-valuetext="原创 50%，极简 50% / Expressive 50%, minimal 50%"><span class="style-grip" aria-hidden="true">↔</span></div>
+  <div id="style-divider" class="style-divider" role="slider" tabindex="0" aria-orientation="horizontal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-label="风格分隔线：向右增加繁而不乱，向左增加极简 / Style divider: right for ornate, left for minimal" aria-valuetext="繁而不乱 50%，极简 50% / Ornate 50%, minimal 50%"><span class="style-grip" aria-hidden="true">↔</span></div>
   <button class="style-choice" data-style="minimal"><span data-lang="zh">选择极简</span><span data-lang="en">Choose minimal</span></button>
-  <button class="style-choice" data-style="expressive"><span data-lang="zh">选择原创</span><span data-lang="en">Choose expressive</span></button>
+  <button class="style-choice" data-style="expressive"><span data-lang="zh">选择繁而不乱</span><span data-lang="en">Choose ornate</span></button>
 </div>
 <script>
  import { snapTarget, easedSplit } from '../utils/style-motion';
@@ -79,8 +79,9 @@
   split = Math.max(0, Math.min(100, value));
   overlay?.style.setProperty('--split', split + '%');
   chooser.style.setProperty('--split', split + '%');
+  root.style.setProperty('--preview-split', String(split));
   divider.setAttribute('aria-valuenow', String(Math.round(split)));
-  divider.setAttribute('aria-valuetext', `原创 ${Math.round(split)}%，极简 ${100-Math.round(split)}% / Expressive ${Math.round(split)}%, minimal ${100-Math.round(split)}%`);
+  divider.setAttribute('aria-valuetext', `繁而不乱 ${Math.round(split)}%，极简 ${100-Math.round(split)}% / Ornate ${Math.round(split)}%, minimal ${100-Math.round(split)}%`);
  }
  function openPreview() {
   document.dispatchEvent(new Event('style:beforepreview'));

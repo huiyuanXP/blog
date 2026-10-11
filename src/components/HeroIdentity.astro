@@ -1,0 +1,50 @@
+<section class="hero" aria-labelledby="hero-name">
+  <div class="hero-ring" aria-hidden="true">
+    <img class="hero-ornament" src="/images/ornament-composition.svg" width="1200" height="1200" alt="" fetchpriority="high" draggable="false" />
+  </div>
+  <button class="ornament-control" type="button" aria-label="旋转纹样：拖动或使用左右方向键 / Rotate ornament: drag or use arrow keys" tabindex="-1"></button>
+  <h1 id="hero-name" class="hero-name"><span>惠</span><span>远</span></h1>
+  <p class="meaning"><span data-lang="zh">普惠众生，利益长远。</span><span data-lang="en">Benefit all, benefit long.</span></p>
+</section>
+<script>
+  import { initOrnamentMotion } from '../utils/ornament-motion';
+  const root = document.documentElement;
+  const surface = document.getElementById('site-surface')!;
+  const hero = surface.querySelector<HTMLElement>('.hero')!;
+  const name = hero.querySelector<HTMLElement>('.hero-name')!;
+  const brand = surface.querySelector<HTMLElement>('.brand-name')!;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  let frame = 0;
+  let targetX = 0;
+  let targetY = 0;
+  let targetScale = 1;
+  function measure() {
+    const target = brand.getBoundingClientRect();
+    const height = hero.offsetHeight;
+    targetX = target.left + target.width / 2 - document.documentElement.clientWidth / 2;
+    targetY = target.top + target.height / 2 - height / 2;
+    targetScale = target.width / name.offsetWidth;
+    update();
+  }
+  function update() {
+    frame = 0;
+    const progress = Math.max(0, Math.min(1, scrollY / (hero.offsetHeight * .7)));
+    const eased = progress * progress * (3 - 2 * progress);
+    const motion = reducedMotion.matches ? 0 : eased;
+    root.style.setProperty('--name-x', `${targetX * motion}px`);
+    root.style.setProperty('--name-y', `${targetY * motion}px`);
+    root.style.setProperty('--name-scale', String(1 + (targetScale - 1) * motion));
+    root.style.setProperty('--hero-progress', String(eased));
+    root.style.setProperty('--name-opacity', String(reducedMotion.matches ? 1 - progress : 1));
+    const docked = progress === 1;
+    if (root.dataset.heroDocked !== String(docked)) root.dataset.heroDocked = String(docked);
+  }
+  function schedule() { if (!frame) frame = requestAnimationFrame(update); }
+  addEventListener('scroll', schedule, {passive:true});
+  addEventListener('resize', measure);
+  reducedMotion.addEventListener('change', update);
+  new ResizeObserver(measure).observe(surface.querySelector('header')!);
+  document.fonts.ready.then(measure);
+  measure();
+  initOrnamentMotion();
+</script>

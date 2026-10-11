@@ -1,6 +1,6 @@
 <script>
  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
- const selector = 'button,.feature-card,.toolkit-grid article,.topic,.blog-entry,.back-link,.article-return,.prototype-header a,.prototype-footer a,summary';
+ const selector = 'button:not(.ornament-control),.feature-card,.toolkit-grid article,.topic,.blog-entry,.back-link,.article-return,.prototype-header a,.prototype-footer a,summary';
  const surfaces = [...document.querySelectorAll<HTMLElement>(selector)].filter(el => !el.closest('.style-overlay'));
  function twin(index: number) {
   return document.querySelector('.style-overlay')?.querySelectorAll<HTMLElement>(selector)[index];

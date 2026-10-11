@@ -6,6 +6,7 @@ import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import '../styles/prototype.css';
 import '../styles/interactions.css';
+import '../styles/hero.css';
 
 interface Props {
   title?: string;
@@ -24,7 +25,7 @@ const { title = 'HuiYuan' } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
-    <div id="site-surface" class="site-surface">
+    <div id="site-surface" class:list={["site-surface", {"has-hero": Astro.url.pathname === "/"}]}>
     <Header />
     <main class="container">
       <slot />

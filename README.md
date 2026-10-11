@@ -1,12 +1,22 @@
 # Personal blog
 
-An Astro 5 static site with Chinese/English writing, two reading styles and an existing Cloudflare-hosted public site at https://huiyuanxp.com/. This VM is a development environment, not the production web server.
+An Astro 5 static site with Chinese/English writing, two reading styles and an existing Cloudflare-hosted public site at https://huiyuanxp.com/. Local previews serve the current workspace build. Production release status is tracked separately below.
 
 ## Reading and navigation
 
 The top Articles/文章 dropdown lists published posts from the shared content collection, newest first, with bilingual titles and their original `/posts/<slug>/` URLs. Hover opens a temporary menu; clicking the trigger pins it open. Clicking again, clicking outside or pressing Escape closes and unpins it. An unpinned menu closes when the pointer leaves the trigger and menu area. Enter/Space, ArrowDown and touch provide alternatives to hover; Escape returns focus to the trigger.
 
-Article-page return links still lead to `/#blog`. The homepage article area, PDF resume, current site name, language preference and left/right style-selection behavior are unchanged by this menu update.
+Article-page return links lead to `/#blog`. The homepage retains its article area, PDF resume and language preference.
+
+## Homepage identity
+
+The first viewport centers the bold 惠远 name and bilingual subtitle. Both styles share the same geometry: the initial 50% divider falls between the two characters. The divider grip sits below the name. Content starts below the first viewport.
+
+The left style, 繁而不乱 / Ornate, uses the approved three-layer SVG in `public/images/ornament-composition.svg` against a black-and-gold palette. Its ring rotates clockwise at 3°/s. Dragging follows the pointer angle; release velocity decays back to that speed with a 1.1-second time constant. Left/right arrow keys rotate the focused ring. Touch retains vertical page scrolling. Minimal presents the centered typography on a light background.
+
+Scrolling through the first 70% of the viewport moves and scales the name into the fixed top-left brand. The ornament remains as a faint, rotating background. Scrolling back reverses the name movement. Reduced-motion preference presents a static ornament with direct manual rotation and a fading name transition; hidden tabs pause rotation.
+
+`HeroIdentity.astro` coordinates the scroll geometry; `hero.css` shares it across the two preview layers; `ornament-motion.ts` owns dragging and inertia. Run `node --test scripts/ornament-motion.test.mjs` for signed-angle, inertia, frame-rate and release-pause checks.
 
 ## Development
 
@@ -43,20 +53,13 @@ PREVIEW_URL=http://127.0.0.1:14322 EVIDENCE_DIR=/tmp/blog-menu-evidence \
 
 The checks cover 1440/390 viewports, both styles and languages, pointer movement into the menu, hover dismissal, click pinning and dismissal, keyboard/Escape focus, touch, full menu containment and hit testing, both formal article links and runtime errors. Screenshots and `results.txt` go to the evidence directory. Inspect screenshots as well as assertions; DOM visibility alone does not catch clipped content. Mobile widths are simulated, not a claim of physical-device acceptance.
 
-## Verified status and remaining work — 2026-10-10
+## Implementation and release state — 2026-10-11
 
-| Fact surface | State | Evidence / limitation |
-| --- | --- | --- |
-| Menu code | changed-and-verified | Shared published-article source; no content or style-selector changes. |
-| Exact-version private preview | changed-and-verified | Build and 162 Chromium assertions passed; desktop/mobile screenshots reviewed. |
-| Public production menu | pending | This menu has not been deployed or verified at the canonical public URL. |
-| Docs and rules | changed-and-verified | Menu contract, schema notes, commands and publication boundaries reconciled with code using neat-freak's text workflow. |
-| Agent memory | out-of-scope | No global or generated memory written. Historical project logs remain historical. |
-| Workspaces / evidence | pending | Review worktrees, private previews, patches and evidence retained; no cleanup authorization assumed. |
-
-The review started from GitHub `main` commit `788722a69202502ef7fd833b827351b413614004`. That baseline's generated homepage main HTML and resource names matched the public homepage, and its resume PDF hash matched the public PDF. This is content equivalence evidence, not a confirmed Cloudflare deployment commit. The old VM checkout was behind remote main and must not be used as a deployment source.
-
-Cloudflare's exact Pages project, domain association, production branch, build settings and current deployment commit remain unverified: the existing noninteractive CLI lacks usable authorization, and GitHub commit status returned no records. Existing documents describe a main-triggered build, but production settings must be checked through an already authorized account before release.
+- **Code and local preview — changed-and-verified:** based on `main` commit `c392bd6`, including the bilingual article menu. The centered first viewport, split styles, draggable ornament and scroll-to-brand behavior are implemented. Astro build and four rotation tests pass; desktop and 390px simulated mobile views cover the split, ornate, minimal and scrolled states.
+- **Docs and rules — changed-and-verified:** this README describes the current homepage behavior; `AGENTS.md` owns the workflow and article contracts.
+- **Remote backup:** `codex/ornament-hero` is the delivery branch; the task closeout reports its verified pushed revision.
+- **Production — pending:** publication is a separate action. Cloudflare project settings and the live deployment revision require verification for a release.
+- **Memory and evidence:** historical logs retain their dated context; current screenshots are retained in `/tmp/blog-motion-*.png`.
 
 ## Branch backup and publication
 
