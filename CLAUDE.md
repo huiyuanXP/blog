@@ -16,7 +16,7 @@ Bilingual (zh/en) personal blog built with Astro v5, deployed as a static site o
 
 **Bilingual system:** Single-page approach using `data-lang="zh"` / `data-lang="en"` attributes on elements. A CSS class (`lang-en`) on `<html>` toggles visibility. Language preference is stored in `localStorage`. No separate routes per language.
 
-**Content:** Published and planned posts live in `src/content/posts/*.md`. Published posts contain both languages — frontmatter has dual fields (`title`/`titleEn`, `description`/`descriptionEn`) and the body uses `<div data-lang="zh">` / `<div data-lang="en">` sections. Content collection schema is defined in `src/content.config.ts` using Astro's glob loader. Planned entries use `placeholder: true`, bilingual titles and grouping metadata, without publication dates, summaries or body. Private diary files are excluded from content loading.
+**Content:** Published and planned posts live in `src/content/posts/*.md`. Published posts use dual metadata fields (`title`/`titleEn`, `description`/`descriptionEn`). Bilingual bodies use `<div data-lang="zh">` / `<div data-lang="en">` sections; author-approved Chinese-only imports use the original Chinese in both metadata fields and an always-visible body. Content collection schema is defined in `src/content.config.ts` using Astro's glob loader. Planned entries use `placeholder: true`, bilingual titles and grouping metadata, without publication dates, summaries or body. Private diary files are excluded from content loading.
 
 **UI translations:** Components render both language variants at build time; JS toggles the CSS class. `src/i18n/translations.ts` is a retained legacy dictionary, currently not imported by UI components; verify consumers before editing it. The article menu reads titles from the post collection.
 
@@ -24,7 +24,7 @@ Bilingual (zh/en) personal blog built with Astro v5, deployed as a static site o
 
 ## Content Workflow
 
-The owner communicates in Chinese. The writing process has two stages:
+The owner communicates in Chinese. Existing authored material follows the import contract in AGENTS.md. New writing has two stages:
 
 **Stage 1 — Three Minds (Chinese draft):** Follow `TOOLS.md` for the sequential thinker, narrator and voice-editor workflow, using native agents or the configured external CLI. Source material and intermediate drafts live in `resources/<article-topic>/`.
 

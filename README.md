@@ -44,7 +44,8 @@ Do not replace another preview or expose a new public service. Worktrees isolate
 ## Content and rules
 
 - `src/content/posts/` is the single source for published and planned articles. `placeholder: true` entries contain bilingual titles and grouping metadata, without publication dates, summaries or body; the top menu excludes them.
-- Published articles retain their complete Chinese and English body and original URLs. Published titles and routes are discovered from the collection.
+- Published articles retain the author-approved language and complete body. Chinese-only imports remain readable in both interface languages; their title and description fields both use the original Chinese. Published titles and routes are discovered from the collection.
+- `/posts/next-token-agent-harness/` contains the complete supplied Chinese HTML article, published to the collection on 2026-10-11. Its screenshots and three interactive diagrams live in `public/articles/next-token-agent-harness/`; article CSS and controls are scoped to `.harness-article`. The homepage tool catalogue in `src/data/tools.ts` links to the six Skill introductions in this article. Toolkit covers the author’s Skills, MCPs and workflows.
 - `src/content/diary/` is private source/history and is excluded from collection loading. Never publish, copy into reports or delete it during UI work.
 - `AGENTS.md` owns workflow and protection rules. `CLAUDE.md` imports it and holds a short technical reference; `TOOLS.md` records project commands and writing tools.
 

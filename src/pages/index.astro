@@ -4,6 +4,7 @@ import HeroIdentity from '../components/HeroIdentity.astro';
 import { getCollection } from 'astro:content';
 import PlannedEntry from '../components/PlannedEntry.astro';
 import { topics } from '../data/topics';
+import { tools } from '../data/tools';
 const allPosts = await getCollection('posts');
 const posts = allPosts.filter(p => !p.data.placeholder).sort((a, b) => b.data.date!.getTime() - a.data.date!.getTime());
 const pendingPosts = allPosts.filter(p => p.data.placeholder).sort((a, b) => a.data.order - b.data.order);
@@ -37,7 +38,14 @@ const toolkitPosts = pendingPosts.filter(p => p.data.toolkit === 'codex');
     </details>
   </div>
 </section>
-<section id="toolkit" class="toolkit"><div class="section-title"><h2>Toolkit</h2><a href="#toolkit-details"><span data-lang="zh">查看 Toolkit ↓</span><span data-lang="en">Explore Toolkit ↓</span></a></div><div id="toolkit-details" class="toolkit-grid"><article><h3><span data-lang="zh">趁手的工具</span><span data-lang="en">Tools worth keeping</span></h3><p class="empty-state"><span data-lang="zh">工具清单待确认</span><span data-lang="en">Tool selection pending</span></p></article><article><h3><span data-lang="zh">Codex / GPT 经验</span><span data-lang="en">Codex / GPT experience</span></h3>{toolkitPosts.map(p => <PlannedEntry post={p} />)}</article></div></section>
+<section id="toolkit" class="toolkit"><div class="section-title"><h2>Toolkit</h2><a href="#toolkit-details"><span data-lang="zh">查看 Toolkit ↓</span><span data-lang="en">Explore Toolkit ↓</span></a></div><div id="toolkit-details" class="toolkit-grid"><article><h3><span data-lang="zh">好用的工具</span><span data-lang="en">Tools worth keeping</span></h3><p>我的 Skill、MCP 与工作流工具。</p><div class="tool-list">{tools.map(tool => <a class="tool-entry" href={`/posts/next-token-agent-harness/#${tool.anchor}`}><span class="tool-heading">{tool.name}<small>{tool.kind}</small></span><span class="tool-description">{tool.description}</span></a>)}</div></article><article><h3><span data-lang="zh">Codex / GPT 经验</span><span data-lang="en">Codex / GPT experience</span></h3>{toolkitPosts.map(p => <PlannedEntry post={p} />)}</article></div></section>
 <section class="perspectives"><div class="section-title"><h2><span data-lang="zh">想法，慢慢展开。</span><span data-lang="en">Room for longer thoughts.</span></h2><span class="topic-provisional"><span data-lang="zh">暂定分类</span><span data-lang="en">Provisional grouping</span></span></div>{topics.map(topic => <section class="topic-group" data-topic={topic.id}><h3><span data-lang="zh">{topic.zh}</span><span data-lang="en">{topic.en}</span></h3>{pendingPosts.filter(p => p.data.topic === topic.id).map(p => <PlannedEntry post={p} />)}{!pendingPosts.some(p => p.data.topic === topic.id) && <p class="empty-state"><span data-lang="zh">暂无待写文章</span><span data-lang="en">No planned articles yet</span></p>}</section>)}</section>
 </div>
 </BaseLayout>
+
+<style>
+.tool-list { display: grid; gap: 1rem; margin-top: 1.5rem; }
+.tool-entry { display: grid; gap: .35rem; padding: .75rem 0; }
+.tool-heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: .6rem; font-weight: 600; }
+.tool-heading small, .tool-description { color: var(--color-text-muted); font-size: .8rem; font-weight: 400; }
+</style>
