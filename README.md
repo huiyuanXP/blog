@@ -57,8 +57,8 @@ The checks cover 1440/390 viewports, both styles and languages, pointer movement
 
 - **Code and local preview — changed-and-verified:** based on `main` commit `c392bd6`, including the bilingual article menu. The centered first viewport, split styles, draggable ornament and scroll-to-brand behavior are implemented. Astro build and four rotation tests pass; desktop and 390px simulated mobile views cover the split, ornate, minimal and scrolled states.
 - **Docs and rules — changed-and-verified:** this README describes the current homepage behavior; `AGENTS.md` owns the workflow and article contracts.
-- **Remote backup:** `codex/ornament-hero` is the delivery branch; the task closeout reports its verified pushed revision.
-- **Production — pending:** publication is a separate action. Cloudflare project settings and the live deployment revision require verification for a release.
+- **Remote backup — verified-current:** `codex/ornament-hero` was fast-forward merged into `main` at `be4c87b`; both branches retain the reviewed implementation.
+- **Production — live verified:** the authorized `main` push of `be4c87b` completed Cloudflare Pages deployment `6f077c6c-b65c-438c-b157-f0c1d3200561` successfully on 2026-10-11. `https://huiyuanxp.com/` serves the centered identity, ornament control and approved SVG reference. The GitHub check links this deployment to the existing Cloudflare Pages project `blog`.
 - **Memory and evidence:** historical logs retain their dated context; current screenshots are retained in `/tmp/blog-motion-*.png`.
 
 ## Branch backup and publication

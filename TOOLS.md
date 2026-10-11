@@ -46,7 +46,7 @@ npm run three-minds -- "基于 resources/ 中的素材，写一篇关于 [主题
 - **平台：** Cloudflare Pages
 - **仓库：** GitHub `huiyuanXP/blog`
 - **域名：** huiyuanxp.com
-- **触发：** 既有记录称 main 推送触发构建；Cloudflare 实际生产分支、构建设置和当前部署 commit 尚待授权账户核实。功能验收、GitHub 分支备份与生产发布状态见 README.md。
+- **触发：** 2026-10-11 已确认 main 推送触发既有 blog 项目的 Cloudflare Pages 构建，并更新 huiyuanxp.com。当前部署证据与发布状态见 README.md。
 
 ## 工具查找协议
 
