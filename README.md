@@ -6,7 +6,7 @@ An Astro 5 static site with Chinese/English writing, two reading styles and an e
 
 The top Articles/文章 dropdown lists published posts from the shared content collection, newest first, with bilingual titles and their original `/posts/<slug>/` URLs. Hover opens a temporary menu; clicking the trigger pins it open. Clicking again, clicking outside or pressing Escape closes and unpins it. An unpinned menu closes when the pointer leaves the trigger and menu area. Enter/Space, ArrowDown and touch provide alternatives to hover; Escape returns focus to the trigger.
 
-Article-page return links lead to `/#blog`. The homepage retains its article area, PDF resume and language preference.
+Article-page return links lead to `/#blog`. The homepage retains its article area, PDF resume and language preference. Its selected open-source card links to `huiyuanXP/huiyuanclaw`, `huiyuanXP/alva` and `huiyuanXP/AtlasMode`, in that order.
 
 ## Homepage identity
 
