@@ -17,7 +17,7 @@ const toolkitPosts = pendingPosts.filter(p => p.data.toolkit === 'codex');
 <HeroIdentity />
 <div class="home-content">
 <section id="home" class="featured-grid" aria-label="Featured entries">
-<article id="resume" class="feature-card"><h2><a href="/resume.pdf"><span data-lang="zh">简历</span><span data-lang="en">Resume</span></a></h2><a class="article-link" href="/resume.pdf" target="_blank" rel="noopener"><span data-lang="zh">查看简历</span><span data-lang="en">View resume</span><span aria-hidden="true">↗</span></a><a class="article-link" href="/resume.pdf" download="xuanpu_zhang_resume.pdf"><span data-lang="zh">下载 PDF</span><span data-lang="en">Download PDF</span><span aria-hidden="true">↓</span></a></article>
+<article id="resume" class="feature-card"><h2><span data-lang="zh">简历</span><span data-lang="en">Resume</span></h2><div class="resume-actions"><a class="resume-button" href="/resume-zh.pdf" target="_blank" rel="noopener" aria-label="查看中文简历 PDF">中文 <span aria-hidden="true">↗</span></a><a class="resume-button" href="/resume.pdf" target="_blank" rel="noopener" aria-label="View English resume PDF">English <span aria-hidden="true">↗</span></a></div></article>
 <article id="projects" class="feature-card"><h2><a href="/projects/"><span data-lang="zh">精选开源项目</span><span data-lang="en">Selected open source</span></a></h2>{projects.map(project => <a class="article-link" href={`/projects/#${project.name}`}><span>{project.name}</span><span aria-hidden="true">↗</span></a>)}</article>
 <article class="feature-card"><h2><span data-lang="zh">精选博客</span><span data-lang="en">Featured writing</span></h2>{featuredPosts.map(p=><a class="article-link" href={`/posts/${p.id}/`}><span data-lang="zh">{p.data.title}</span><span data-lang="en">{p.data.titleEn}</span><span aria-hidden="true">↗</span></a>)}<a class="article-link" href="#blog"><span data-lang="zh">所有文章</span><span data-lang="en">All articles</span><span aria-hidden="true">↓</span></a></article>
 </section>
@@ -45,6 +45,10 @@ const toolkitPosts = pendingPosts.filter(p => p.data.toolkit === 'codex');
 </BaseLayout>
 
 <style>
+.resume-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
+.resume-button { display: inline-flex; align-items: center; justify-content: center; gap: 1rem; min-height: 44px; padding: .65rem 1rem; border: 1px solid var(--color-border); border-radius: 100px; font-size: .9rem; }
+.resume-button:hover { background: var(--color-bg); border-color: var(--color-text); }
+
 .tool-list { display: grid; gap: 1rem; margin-top: 1.5rem; }
 .tool-entry { display: grid; gap: .35rem; padding: .75rem 0; }
 .tool-heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: .6rem; font-weight: 600; }
