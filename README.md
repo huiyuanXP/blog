@@ -18,6 +18,12 @@ Scrolling through the first 70% of the viewport moves and scales the name into t
 
 `HeroIdentity.astro` coordinates the scroll geometry; `hero.css` shares it across the two preview layers; `ornament-motion.ts` owns dragging and inertia. Run `node --test scripts/ornament-motion.test.mjs` for signed-angle, inertia, frame-rate and release-pause checks.
 
+## Ornament article and studio
+
+`/posts/svg-traditional-ornaments/` presents the bilingual making-of article with the approved SVG and an embedded studio. `/ornament-studio/` hosts the companion static site, with a 28-item catalogue, three configurable layers, source overlays and SVG export. `?preset=avatar` loads the exact static blog composition; each layer starts at speed zero. The article and studio share this repository and the Cloudflare Pages deployment. The current delivery branch is `codex/ornament-article`; production publication is tracked separately from branch push.
+
+Studio source and assets live in `public/ornament-studio/`. It uses the same point geometry for Canvas previews and exported SVG paths. Article materials and sequential thinker/narrator/editor drafts are retained locally under `resources/ornament-article/`; the writing workflow is described in `TOOLS.md`.
+
 ## Development
 
 ```sh
@@ -38,7 +44,7 @@ Do not replace another preview or expose a new public service. Worktrees isolate
 ## Content and rules
 
 - `src/content/posts/` is the single source for published and planned articles. `placeholder: true` entries contain bilingual titles and grouping metadata, without publication dates, summaries or body; the top menu excludes them.
-- Published articles retain their complete Chinese and English body and original URLs. Two current formal articles are `/posts/agent-swarm/` and `/posts/langchain-end/`.
+- Published articles retain their complete Chinese and English body and original URLs. Published titles and routes are discovered from the collection.
 - `src/content/diary/` is private source/history and is excluded from collection loading. Never publish, copy into reports or delete it during UI work.
 - `AGENTS.md` owns workflow and protection rules. `CLAUDE.md` imports it and holds a short technical reference; `TOOLS.md` records project commands and writing tools.
 

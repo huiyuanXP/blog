@@ -19,7 +19,7 @@
 
 ## Constraints
 
-- **写作风格必须参考** `resources/writing-style/` — 里面是惠远的声音定义
+- **写作风格**：优先参考 `resources/writing-style/`；该目录待提供时参考已发表博文。三阶段执行方式见 `TOOLS.md`
 - **不绕过 three-minds 流程** — 正式博文先走三个 agent，再翻译发布
 - **日记内容不外泄** — Diaries 相关内容不写入跨 workspace 的日志
 - **不直接修改 `dist/`** — 内容走 `src/content/`，构建由 npm run build 完成

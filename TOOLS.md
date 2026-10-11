@@ -8,21 +8,17 @@
 
 ### three-minds（博文专属写作流程）
 
-**这是 blog workspace 的主写作工具，其他 workspace 不使用。**
+three-minds 按思想者、叙事者、去味师顺序产出中文稿，再翻译为英文。
 
-```bash
-npm run three-minds -- "基于 resources/ 中的素材，写一篇关于 [主题] 的博客文章"
+本地原生 Agent 路径：先把事实素材放入 `resources/<文章主题>/`；依次运行三个角色，分别保存 `01-thinking.md`、`02-narrative.md`、`03-polished.md`。每个角色读取上一阶段产物；主 Agent 核对中文成稿后整理英文版与正式文章。写作语气优先参考 `resources/writing-style/`，该目录待提供时参考 `src/content/posts/` 中已发表文章。
+
+外部 CLI 路径：运行环境包含 `dist/index.js` 和 `configs/blog-writing.json` 后执行：
+
+```sh
+THREE_MINDS_ROOT=/absolute/path/to/three-minds pnpm three-minds -- "基于 resources/ 中的素材撰写中文稿"
 ```
 
-三个 agent 顺序执行：
-1. **思想者** — 挖掘深度，找到核心洞见
-2. **叙事者** — 打磨表达、节奏与意象
-3. **去味师** — 去除 AI 腔，注入惠远的个人声音
-
-配置文件：`resources/three-minds/three-minds/configs/blog-writing.json`
-写作风格定义：`resources/writing-style/`
-
-也可通过 Claude Code skill 触发（说"帮我写篇文章"即可）。
+`THREE_MINDS_ROOT` 默认指向本项目 `resources/three-minds/three-minds`。角色执行次序与产物契约在两种路径中一致。
 
 ## 开发工具
 

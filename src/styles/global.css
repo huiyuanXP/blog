@@ -223,3 +223,10 @@ html.lang-en [data-lang="zh"] { display: none; }
     padding: 0 var(--space-md);
   }
 }
+
+.post-content .ornament-figure{margin:32px 0;padding:24px;background:#151310;border-radius:12px;text-align:center;color:#c7a873}
+.post-content .ornament-figure img{display:block;width:min(100%,480px);height:auto;margin:auto}
+.post-content .ornament-figure figcaption{margin-top:16px;font-size:13px}
+.post-content .ornament-embed{margin:32px 0}
+.post-content .ornament-embed iframe{display:block;width:100%;border:1px solid var(--color-border);border-radius:12px;background:#10100d}
+.post-content .ornament-embed p{text-align:right;font-size:13px}

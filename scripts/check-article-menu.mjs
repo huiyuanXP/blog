@@ -1,5 +1,6 @@
 const {chromium} = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 import fs from 'node:fs';
+const publishedCount=fs.readdirSync(new URL('../src/content/posts/',import.meta.url)).filter(name=>name.endsWith('.md')).filter(name=>!/^placeholder:\s*true\s*$/m.test(fs.readFileSync(new URL('../src/content/posts/'+name,import.meta.url),'utf8'))).length;
 const dir=process.env.EVIDENCE_DIR || '/tmp/blog-menu-evidence';fs.mkdirSync(dir,{recursive:true});
 const baseUrl=process.env.PREVIEW_URL || 'http://127.0.0.1:14322';
 const browser=await chromium.launch({headless:true});const results=[];
@@ -18,7 +19,7 @@ for(const width of [1440,390])for(const style of ['minimal','expressive'])for(co
  await trigger.click();await p.locator('.hero .meaning').click();check(await links.isHidden(),label+' outside closes');
  await trigger.click();await p.keyboard.press('Escape');check(await links.isHidden(),label+' Escape closes');check(await trigger.evaluate(el=>el===document.activeElement),label+' Escape restores focus');
  await p.mouse.move(width-1,899);await trigger.focus();await p.keyboard.press('Enter');check(await links.isVisible(),label+' keyboard opens');await p.keyboard.press('Escape');await p.keyboard.press('ArrowDown');check(await links.locator('a').first().evaluate(el=>el===document.activeElement),label+' ArrowDown enters links');
- const titles=await links.locator(`a [data-lang="${lang}"]`).allTextContents();check(titles.length===2&&titles.every(Boolean),label+' two bilingual articles');
+ const titles=await links.locator(`a [data-lang="${lang}"]`).allTextContents();check(titles.length===publishedCount&&titles.every(Boolean),label+' all published bilingual articles');
  for(const slug of ['agent-swarm','langchain-end']) {await trigger.click();await links.locator(`a[href="/posts/${slug}/"]`).click();check(p.url().endsWith(`/posts/${slug}/`),label+' '+slug+' link');check(await p.locator('.post-content').isVisible(),label+' '+slug+' body');await p.goto(baseUrl + '/');}
  check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),label+' no horizontal overflow');check(errors.length===0,label+' no JS errors');await c.close();
 }
