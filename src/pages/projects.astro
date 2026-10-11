@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { projects } from '../data/projects';
+---
+<BaseLayout title="精选开源项目 · 惠远">
+  <div class="projects-page">
+    <a class="back-link" href="/#home"><span data-lang="zh">← 首页</span><span data-lang="en">← Home</span></a>
+    <p class="page-label"><span data-lang="zh">精选开源项目</span><span data-lang="en">Selected open source</span></p>
+    {projects.map((project, index) => <section id={project.name} class="project">
+      <span class="project-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+      <h1>{project.name}</h1>
+      <p data-lang="zh">{project.description}</p>
+      <p data-lang="en">{project.descriptionEn}</p>
+      <a class="article-link" href={project.url} target="_blank" rel="noopener noreferrer"><span data-lang="zh">查看 GitHub 项目</span><span data-lang="en">View on GitHub</span><span aria-hidden="true">↗</span></a>
+    </section>)}
+  </div>
+</BaseLayout>
+<style>
+  .projects-page { padding: 2rem 0 5rem; }
+  .page-label { margin: 3rem 0 1rem; color: var(--color-text-muted); font-size: .85rem; }
+  .project { padding: 3rem 0; border-top: 1px solid var(--color-border); }
+  .project-number { font-family: var(--font-mono); color: var(--color-text-muted); font-size: .75rem; }
+  .project h1 { margin: .75rem 0 1.25rem; font-size: clamp(2rem, 6vw, 3rem); }
+  .project p { line-height: 1.9; }
+  .project .article-link { margin-top: 2rem; }
+</style>

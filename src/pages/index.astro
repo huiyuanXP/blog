@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 import PlannedEntry from '../components/PlannedEntry.astro';
 import { topics } from '../data/topics';
 import { tools } from '../data/tools';
+import { projects } from '../data/projects';
 const allPosts = await getCollection('posts');
 const posts = allPosts.filter(p => !p.data.placeholder).sort((a, b) => b.data.date!.getTime() - a.data.date!.getTime());
 const pendingPosts = allPosts.filter(p => p.data.placeholder).sort((a, b) => a.data.order - b.data.order);
@@ -15,9 +16,9 @@ const toolkitPosts = pendingPosts.filter(p => p.data.toolkit === 'codex');
 <BaseLayout title="惠远 · 首页原型">
 <HeroIdentity />
 <div class="home-content">
-<section class="featured-grid" aria-label="Featured entries">
-<article id="resume" class="feature-card"><h2><span data-lang="zh">简历</span><span data-lang="en">Resume</span></h2><a class="article-link" href="/resume.pdf" target="_blank" rel="noopener"><span data-lang="zh">查看简历</span><span data-lang="en">View resume</span><span aria-hidden="true">↗</span></a><a class="article-link" href="/resume.pdf" download="xuanpu_zhang_resume.pdf"><span data-lang="zh">下载 PDF</span><span data-lang="en">Download PDF</span><span aria-hidden="true">↓</span></a></article>
-<article id="projects" class="feature-card"><h2><span data-lang="zh">精选开源项目</span><span data-lang="en">Selected open source</span></h2><a class="article-link" href="https://github.com/huiyuanXP/huiyuanclaw" target="_blank" rel="noopener noreferrer"><span>huiyuanclaw</span><span aria-hidden="true">↗</span></a><a class="article-link" href="https://github.com/huiyuanXP/alva" target="_blank" rel="noopener noreferrer"><span>alva</span><span aria-hidden="true">↗</span></a><a class="article-link" href="https://github.com/huiyuanXP/AtlasMode" target="_blank" rel="noopener noreferrer"><span>AtlasMode</span><span aria-hidden="true">↗</span></a></article>
+<section id="home" class="featured-grid" aria-label="Featured entries">
+<article id="resume" class="feature-card"><h2><a href="/resume.pdf"><span data-lang="zh">简历</span><span data-lang="en">Resume</span></a></h2><a class="article-link" href="/resume.pdf" target="_blank" rel="noopener"><span data-lang="zh">查看简历</span><span data-lang="en">View resume</span><span aria-hidden="true">↗</span></a><a class="article-link" href="/resume.pdf" download="xuanpu_zhang_resume.pdf"><span data-lang="zh">下载 PDF</span><span data-lang="en">Download PDF</span><span aria-hidden="true">↓</span></a></article>
+<article id="projects" class="feature-card"><h2><a href="/projects/"><span data-lang="zh">精选开源项目</span><span data-lang="en">Selected open source</span></a></h2>{projects.map(project => <a class="article-link" href={`/projects/#${project.name}`}><span>{project.name}</span><span aria-hidden="true">↗</span></a>)}</article>
 <article class="feature-card"><h2><span data-lang="zh">精选博客</span><span data-lang="en">Featured writing</span></h2>{featuredPosts.map(p=><a class="article-link" href={`/posts/${p.id}/`}><span data-lang="zh">{p.data.title}</span><span data-lang="en">{p.data.titleEn}</span><span aria-hidden="true">↗</span></a>)}<a class="article-link" href="#blog"><span data-lang="zh">所有文章</span><span data-lang="en">All articles</span><span aria-hidden="true">↓</span></a></article>
 </section>
 <section id="blog" class="blog-hub" aria-labelledby="blog-title">

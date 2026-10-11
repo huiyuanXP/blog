@@ -10,6 +10,7 @@
   import { initOrnamentMotion } from '../utils/ornament-motion';
   const root = document.documentElement;
   const surface = document.getElementById('site-surface')!;
+  const header = surface.querySelector<HTMLElement>('header')!;
   const hero = surface.querySelector<HTMLElement>('.hero')!;
   const name = hero.querySelector<HTMLElement>('.hero-name')!;
   const brand = surface.querySelector<HTMLElement>('.brand-name')!;
@@ -28,7 +29,8 @@
   }
   function update() {
     frame = 0;
-    const progress = Math.max(0, Math.min(1, scrollY / (hero.offsetHeight * .7)));
+    const dockDistance = Math.min(hero.offsetHeight * .7, Math.max(1, hero.offsetHeight - header.offsetHeight));
+    const progress = Math.max(0, Math.min(1, scrollY / dockDistance));
     const eased = progress * progress * (3 - 2 * progress);
     const motion = reducedMotion.matches ? 0 : eased;
     root.style.setProperty('--name-x', `${targetX * motion}px`);
@@ -43,7 +45,7 @@
   addEventListener('scroll', schedule, {passive:true});
   addEventListener('resize', measure);
   reducedMotion.addEventListener('change', update);
-  new ResizeObserver(measure).observe(surface.querySelector('header')!);
+  new ResizeObserver(measure).observe(header);
   document.fonts.ready.then(measure);
   measure();
   initOrnamentMotion();

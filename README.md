@@ -8,7 +8,7 @@ The top Articles/文章 dropdown lists published posts from the shared content c
 
 The global header stays at the top while reading. The Agent Harness chapter navigation sticks immediately below it, spans the viewport and shares the global style; measured header heights keep chapter anchors visible across responsive layouts. `scripts/check-sticky-headers.mjs` checks both styles at desktop and narrow widths using the same browser environment variables as the style check.
 
-Article-page return links lead to `/#blog`. The homepage retains its article area, PDF resume and language preference. Its selected open-source card links to `huiyuanXP/huiyuanclaw`, `huiyuanXP/alva` and `huiyuanXP/AtlasMode`, in that order.
+Article-page return links lead to `/#blog`. The homepage retains its article area, PDF resume and language preference. Home leads to `/#home`, with the identity docked and the resume card at the top of the content area. Resume opens `/resume.pdf`. The selected open-source card and Projects navigation open `/projects/`; each of huiyuanclaw, alva and AtlasMode has a first-level heading, a short editable introduction from `src/data/projects.ts`, and its GitHub link. Next Token to Agent Harness is included in featured writing. `scripts/check-home-projects.mjs` verifies these entry points with the browser environment variables described below.
 
 ## Style selection
 

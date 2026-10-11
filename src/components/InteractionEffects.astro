@@ -78,13 +78,15 @@
  const navLinks = document.querySelectorAll<HTMLAnchorElement>('#site-surface > header nav a');
  function updateNavigation() {
   const isPost = location.pathname.startsWith('/posts/');
-  const hash = isPost ? '#blog' : location.hash;
+  const hash = isPost ? '#blog' : location.hash || '#home';
   navLinks.forEach(link => {
-   const selected = link.hash === hash;
+   const selected = isPost
+    ? link.pathname === '/' && link.hash === '#blog'
+    : link.pathname === location.pathname && (!link.hash || link.hash === hash);
    const copy = document.querySelector('.style-overlay')?.querySelector<HTMLAnchorElement>(`nav a[href="${link.getAttribute('href')}"]`);
    [link, copy].forEach(target => {
     if (!target) return;
-    if (selected) target.setAttribute('aria-current', isPost ? 'page' : 'location');
+    if (selected) target.setAttribute('aria-current', isPost || !link.hash ? 'page' : 'location');
     else target.removeAttribute('aria-current');
    });
   });

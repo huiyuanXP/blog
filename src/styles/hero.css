@@ -30,3 +30,5 @@ html[data-hero-docked=true] .ornament-control{display:none!important}
 @media(max-width:640px){:root{--identity-size:min(92vw,62svh)}.home-content{padding:32px 20px 0}.hero .meaning{font-size:20px;top:calc(50svh + var(--identity-size)/2 + 20px)}}
 @media(prefers-reduced-motion:reduce){.hero-ring{transform:translate(-50%,-50%)}.hero-name{transform:translate(-50%,-50%)}}
 html:has(.has-hero) .style-grip{top:calc(50% + var(--identity-size)*.28)}
+
+#site-surface #home{scroll-margin-top:calc(var(--site-header-height,90px) + 16px)}

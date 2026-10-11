@@ -6,6 +6,7 @@ descriptionEn: 从 next token prediction 到 Agent Harness：带原始截图、�
 date: 2026-10-11
 tags: [LLM, Agent Harness, Skill, MCP]
 topic: agents
+featured: true
 ---
 
 <link rel="stylesheet" href="/articles/next-token-agent-harness/article.css">

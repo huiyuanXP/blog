@@ -4,7 +4,7 @@ const isPost = Astro.url.pathname.startsWith('/posts/');
 ---
 
 <header class="prototype-header"><a class="brand" href="/"><span class="brand-name">惠远</span><span class="brand-dot">↗</span></a>
-<nav aria-label="Main navigation"><a href="/">Home</a><a href="/#projects">Projects</a><ArticleMenu current={isPost} /><a href="/#toolkit">Toolkit</a><a href="/#resume">Resume</a></nav>
+<nav aria-label="Main navigation"><a href="/#home">Home</a><a href="/projects/">Projects</a><ArticleMenu current={isPost} /><a href="/#toolkit">Toolkit</a><a href="/resume.pdf" target="_blank" rel="noopener">Resume</a></nav>
 <div class="header-controls"><button id="lang-toggle" aria-label="切换语言 / Change language">ZH / EN</button><button id="style-toggle"><span data-lang="zh">风格</span><span data-lang="en">Style</span></button><a href="/#contact"><span data-lang="zh">联系 ↗</span><span data-lang="en">Contact ↗</span></a></div></header>
 
 <script>
