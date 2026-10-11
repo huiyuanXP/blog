@@ -1,4 +1,6 @@
 :root{--identity-size:min(90vw,80svh,800px);--hero-progress:0;--name-x:0px;--name-y:0px;--name-scale:1;--name-opacity:1;--ornament-angle:0deg;--preview-split:50}
+.site-surface>.prototype-header{position:sticky;top:0;z-index:5;max-width:none;background:var(--color-bg)}
+.site-surface [id]{scroll-margin-top:calc(var(--site-header-height,90px) + 24px)}
 .has-hero{isolation:isolate}
 .has-hero>.container{max-width:none;padding:0}
 .has-hero>.prototype-header{position:fixed;inset:0 0 auto;z-index:5;max-width:none;background:color-mix(in srgb,var(--color-bg) calc(var(--hero-progress)*96%),transparent);border-bottom-color:color-mix(in srgb,var(--color-border) calc(var(--hero-progress)*100%),transparent)}

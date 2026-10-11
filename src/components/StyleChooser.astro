@@ -9,7 +9,6 @@
  const surface = document.getElementById('site-surface')!;
  const chooser = document.getElementById('style-chooser')!;
  const divider = document.getElementById('style-divider')!;
- const duration = 30 * 86400000;
  let overlay: HTMLElement | undefined;
  let split = 50;
  let frame = 0;
@@ -22,7 +21,7 @@
   returnGrip = undefined;
   emphasis?.cancel();
  }
- function guideToStyle(from: DOMRect) {
+ function guideToStyle(from: DOMRect, fromScroll = false) {
   stopGuide();
   const toggle = document.getElementById('style-toggle')!;
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -40,7 +39,7 @@
   const initialX = from.x + from.width / 2;
   const initialY = from.y + from.height / 2;
   const toggleRect = toggle.getBoundingClientRect();
-  if (toggleRect.top < 0 || toggleRect.bottom > innerHeight) {
+  if (!fromScroll && (toggleRect.top < 0 || toggleRect.bottom > innerHeight)) {
    toggle.closest('header')!.scrollIntoView({behavior:'smooth', block:'start'});
   }
   function fly(now: number) {
@@ -58,7 +57,7 @@
     borderRadius: easedSplit(24, target.height / 2, progress) + 'px',
    });
    returnGrip.firstElementChild!.setAttribute('style', `opacity:${1-progress}`);
-   if (progress < 1 || (target.top < 0 && elapsed < 1600)) guideFrame = requestAnimationFrame(fly);
+   if (progress < 1 || (!fromScroll && target.top < 0 && elapsed < 1600)) guideFrame = requestAnimationFrame(fly);
    else {
     returnGrip.remove();
     returnGrip = undefined;
@@ -72,6 +71,8 @@
   guideFrame = requestAnimationFrame(fly);
  }
  let dragging = false;
+ let settling = false;
+ let lastScrollY = window.scrollY;
  let dragStart = 0;
  let startSplit = split;
  let committedStyle = root.dataset.style;
@@ -87,6 +88,8 @@
   document.dispatchEvent(new Event('style:beforepreview'));
   stopGuide();
   cancelAnimationFrame(frame);
+  settling = false;
+  lastScrollY = window.scrollY;
   if (!overlay) committedStyle = root.dataset.style;
   overlay?.remove();
   chooser.hidden = false;
@@ -105,25 +108,27 @@
   surface.append(overlay);
   updatePreview(50);
  }
- function commit(style: string) {
+ function commit(style: string, fromScroll = false) {
   const gripRect = divider.querySelector('.style-grip')!.getBoundingClientRect();
   root.classList.remove('style-preview');
   root.dataset.style = style;
   surface.removeAttribute('data-style');
   overlay?.remove();
   overlay = undefined;
-  try { localStorage.setItem('blog-style', JSON.stringify({style, expires: Date.now()+duration})); } catch {}
+  try { localStorage.setItem('blog-style', JSON.stringify({style})); } catch {}
   chooser.hidden = true;
-  document.getElementById('style-toggle')?.focus({preventScroll:true});
-  guideToStyle(gripRect);
+  settling = false;
+  if (!fromScroll) document.getElementById('style-toggle')?.focus({preventScroll:true});
+  guideToStyle(gripRect, fromScroll);
  }
- function settle(target: number) {
+ function settle(target: number, fromScroll = false) {
   cancelAnimationFrame(frame);
+  settling = true;
   const start = split;
   const style = target === 100 ? 'expressive' : 'minimal';
   if (matchMedia('(prefers-reduced-motion: reduce)').matches || start === target) {
    updatePreview(target);
-   commit(style);
+   commit(style, fromScroll);
    return;
   }
   const started = performance.now();
@@ -131,22 +136,21 @@
    const progress = Math.min(1, (now - started) / 600);
    updatePreview(easedSplit(start, target, progress));
    if (progress < 1) frame = requestAnimationFrame(tick);
-   else commit(style);
+   else commit(style, fromScroll);
   }
   frame = requestAnimationFrame(tick);
  }
- let remembered = false;
- try {
-  const saved = JSON.parse(localStorage.getItem('blog-style') || 'null');
-  if(saved && saved.expires > Date.now() && ['expressive','minimal'].includes(saved.style)) {
-   root.dataset.style = saved.style;
-   remembered = true;
-  }
- } catch {}
- if (!remembered) openPreview();
+ if (root.dataset.styleRemembered !== 'true') openPreview();
+ window.addEventListener('scroll', () => {
+  const nextScrollY = window.scrollY;
+  const downward = nextScrollY > lastScrollY;
+  lastScrollY = nextScrollY;
+  if (downward && !chooser.hidden && !dragging && !settling) settle(0, true);
+ }, {passive:true});
  chooser.querySelectorAll<HTMLButtonElement>('[data-style]').forEach(b=>b.addEventListener('click',()=>settle(b.dataset.style === 'expressive' ? 100 : 0)));
  divider.addEventListener('pointerdown',e=>{
   cancelAnimationFrame(frame);
+  settling = false;
   dragging = true;
   dragStart = e.clientX;
   startSplit = split;
@@ -161,6 +165,7 @@
   if (['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) {
    e.preventDefault();
    cancelAnimationFrame(frame);
+   settling = false;
    updatePreview(e.key === 'Home' ? 0 : e.key === 'End' ? 100 : split + (e.key === 'ArrowRight' ? 5 : -5));
   } else if (e.key === 'Enter' || e.key === ' ') {
    e.preventDefault();settle(snapTarget(split));

@@ -8,6 +8,15 @@ const isPost = Astro.url.pathname.startsWith('/posts/');
 <div class="header-controls"><button id="lang-toggle" aria-label="切换语言 / Change language">ZH / EN</button><button id="style-toggle"><span data-lang="zh">风格</span><span data-lang="en">Style</span></button><a href="/#contact"><span data-lang="zh">联系 ↗</span><span data-lang="en">Contact ↗</span></a></div></header>
 
 <script>
+  const header = document.querySelector<HTMLElement>('#site-surface > .prototype-header')!;
+  function measureHeader() {
+    const rect = header.getBoundingClientRect();
+    document.documentElement.style.setProperty('--site-header-height', rect.height + 'px');
+    document.documentElement.style.setProperty('--site-header-width', rect.width + 'px');
+  }
+  measureHeader();
+  new ResizeObserver(measureHeader).observe(header);
+
   function initLang() {
     let saved = 'zh';
     try { saved = localStorage.getItem('lang') || 'zh'; } catch {}

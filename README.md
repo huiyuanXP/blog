@@ -6,7 +6,15 @@ An Astro 5 static site with Chinese/English writing, two reading styles and an e
 
 The top Articles/文章 dropdown lists published posts from the shared content collection, newest first, with bilingual titles and their original `/posts/<slug>/` URLs. Hover opens a temporary menu; clicking the trigger pins it open. Clicking again, clicking outside or pressing Escape closes and unpins it. An unpinned menu closes when the pointer leaves the trigger and menu area. Enter/Space, ArrowDown and touch provide alternatives to hover; Escape returns focus to the trigger.
 
+The global header stays at the top while reading. The Agent Harness chapter navigation sticks immediately below it, spans the viewport and shares the global style; measured header heights keep chapter anchors visible across responsive layouts. `scripts/check-sticky-headers.mjs` checks both styles at desktop and narrow widths using the same browser environment variables as the style check.
+
 Article-page return links lead to `/#blog`. The homepage retains its article area, PDF resume and language preference. Its selected open-source card links to `huiyuanXP/huiyuanclaw`, `huiyuanXP/alva` and `huiyuanXP/AtlasMode`, in that order.
+
+## Style selection
+
+First visits show the split style chooser. Choosing a style saves `blog-style` in localStorage persistently; refreshes and article navigation restore it before painting. Saved preferences from the dated format remain valid. Opening Style starts a fresh preview. Downward scrolling during an undecided preview settles into Minimal with the divider and returning-grip animation, preserving the reading position and focus. Explicit button and divider interactions take priority. Reduced-motion preferences use an immediate selection.
+
+Run `scripts/check-style-choice.mjs` against a running preview with `PLAYWRIGHT_MODULE`, `BROWSER_CHANNEL` (optional), `PREVIEW_URL` and `EVIDENCE_DIR`. It covers first visits, scrolling, persistence, explicit selection, navigation, reduced motion and stored preferences.
 
 ## Homepage identity
 

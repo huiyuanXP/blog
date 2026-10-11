@@ -1,7 +1,10 @@
 (()=>{const root=document.querySelector('.harness-article');if(!root)return;
 
 const $=s=>root.querySelector(s), $$=s=>Array.from(root.querySelectorAll(s));
-$('#theme').onclick=()=>root.classList.toggle('dark');
+const nav=$('nav');
+const measureNav=()=>document.documentElement.style.setProperty('--article-nav-height',nav.getBoundingClientRect().height+'px');
+measureNav();
+new ResizeObserver(measureNav).observe(nav);
 $('#outline').onclick=()=>{$$('details').forEach(d=>d.open=false);root.classList.remove('reading')};
 $('#lecture').onclick=()=>{$$('.talk').forEach(d=>d.open=true);root.classList.add('reading')};
 $('#expandall').onclick=()=>$$('details:not(.diagram):not(.skill-source)').forEach(d=>d.open=true);

@@ -21,6 +21,15 @@ const { title = 'HuiYuan' } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <script is:inline>
+      try {
+        const saved = JSON.parse(localStorage.getItem('blog-style') || 'null');
+        if (saved && ['expressive', 'minimal'].includes(saved.style)) {
+          document.documentElement.dataset.style = saved.style;
+          document.documentElement.dataset.styleRemembered = 'true';
+        }
+      } catch {}
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
   </head>
